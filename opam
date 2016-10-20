@@ -1,0 +1,19 @@
+opam-version: "1.2"
+maintainer: "Anil Madhavapeddy <anil@recoil.org>"
+authors: ["Anil Madhavapeddy <anil@recoil.org>"]
+homepage: "https://github.com/avsm/jekyll-format"
+doc: "http://anil.recoil.org/jekyll-format/doc"
+license: "ISC"
+dev-repo: "https://github.com/avsm/jekyll-format.git"
+bug-reports: "https://github.com/avsm/jekyll-format/issues"
+tags: []
+available: [ ocaml-version >= "4.01.0"]
+depends: [
+  "ocamlfind" {build}
+  "ocamlbuild" {build}
+  "topkg" {build} 
+  "astring"
+  "omd"
+]
+depopts: []
+build: [ "ocaml" "pkg/pkg.ml" "build" "--pinned" "%{pinned}%" ]

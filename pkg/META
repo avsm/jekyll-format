@@ -1,0 +1,7 @@
+description = "Jekyll post parsing library"
+version = "%%VERSION%%"
+requires = ""
+archive(byte) = "jekyll-format.cma"
+archive(native) = "jekyll-format.cmxa"
+plugin(byte) = "jekyll-format.cma"
+plugin(native) = "jekyll-format.cmxs"
