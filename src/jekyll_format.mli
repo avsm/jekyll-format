@@ -30,20 +30,25 @@ val fields : t -> fields
 val body : t -> body
 (** [body t] retrieves the blog post content from the blog post *)
 
-val body_to_string : body -> string
-(** [body_to_string body] serialises the body to an OCaml string, maintaining
-    the original layout and whitespace. *)
+(** {1 YAML metadata} *)
 
 val find : string -> fields -> string option
-(** [find key t] retrieves [key] from the YAML front matter, and {!None} if
-    the key is not present. Keys are case-sensitive as per the YAML specification.
-    Whitespace is trimmed around the field value. *)
+(** [find key t] retrieves the first [key] from the YAML front matter, and
+    {!None} if the key is not present. Keys are case-sensitive as per the
+    YAML specification.  Whitespace is trimmed around the field value. *)
+
+val keys : fields -> string list
+(** [keys f] retrieves all of the key names in the YAML front matter. *)
 
 (** {1 Conversion functions} *)
 
 val of_string : string -> (t, [> Rresult.R.msg ]) Result.result
 (** [of_string t] parses a Jekyll-format blog post and either returns a {!t}
     or signals an error in the result. *)
+
+val body_to_string : body -> string
+(** [body_to_string body] serialises the body to an OCaml string, maintaining
+    the original layout and whitespace. *)
 
 (** {1 Pretty printers} *)
 

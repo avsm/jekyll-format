@@ -44,6 +44,9 @@ let find key (f:fields) =
     snd |> String.Sub.to_string |> fun x -> Some x
   with Not_found -> None
 
+let keys f =
+  List.map (fun (k,v) -> String.Sub.to_string k) f
+
 let pp_body ppf body =
   let open Fmt in
   let pp_list = list ~sep:Format.pp_force_newline String.Sub.pp in

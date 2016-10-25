@@ -51,7 +51,8 @@ let test_find ~base_dir () =
   JF.fields |> fun f ->
   check (option string) "find success" (Some "111") (JF.find "alice" f);
   check (option string) "find fail" None (JF.find "xalice" f);
-  check (option string) "find fail case sensitive" None (JF.find "Alice" f)
+  check (option string) "find fail case sensitive" None (JF.find "Alice" f);
+  check (list string) "find keys" ["alice";"bob";"charlie"] (JF.keys f)
 
 let test_body ~base_dir () =
   let open Rresult.R.Infix in
