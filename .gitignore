@@ -1,8 +1,10 @@
 _build
+_tests
 tmp
 *~
 \.\#*
 \#*#
+.*.swp
 *.install
 *.native
 *.byte

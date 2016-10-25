@@ -4,6 +4,57 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
+open Astring
+open Rresult
+
+module E = struct
+  let yaml_no_start = "Unable to find YAML front matter start ---"
+  let yaml_no_end = "Unable to find YAML front matter terminating ---"
+  let yaml_field_parse s = Fmt.strf "Unable to parse YAML field: %s" s
+end
+
+type fields = (String.Sub.t * String.Sub.t) list
+type body = String.Sub.t list
+type t = fields * body
+
+let of_string t =
+  let open R.Infix in
+  let lines = String.Sub.(cuts ~sep:(v "\n") (v t)) in
+  let is_yaml_delimiter s = String.Sub.to_string s = "---" in
+  let rec get_yaml acc = function
+  | [] -> R.error_msg E.yaml_no_end
+  | hd::tl when String.Sub.length hd = 0 -> R.error_msg E.yaml_no_end
+  | hd::tl when is_yaml_delimiter hd -> R.ok (List.rev acc, tl)
+  | hd::tl ->
+     String.Sub.(cut ~sep:(v ":") hd) |> function
+     | None -> R.error_msg (E.yaml_field_parse (String.Sub.to_string hd))
+     | Some f -> get_yaml (f :: acc) tl in
+  match lines with
+  | [] -> R.error_msg E.yaml_no_start
+  | hd::_ when not (is_yaml_delimiter hd) -> R.error_msg E.yaml_no_start
+  | hd::tl -> get_yaml [] tl
+
+let fields = fst
+let body = snd
+
+let pp_body ppf body =
+  let open Fmt in
+  let pp_list = list ~sep:Format.pp_force_newline String.Sub.pp in
+  pf ppf "%a" pp_list body
+
+let pp_fields ppf fields =
+  let open Fmt in
+  let pp_colon = unit ":" in
+  let pp_field = pair ~sep:pp_colon String.Sub.pp String.Sub.pp in
+  let pp_fields = list ~sep:Format.pp_force_newline pp_field in
+  pf ppf "%a" pp_fields fields
+
+let pp ppf t =
+  let open Fmt in
+  pf ppf "\n---\n";
+  pf ppf "%a" (pair ~sep:(unit "\n---\n") pp_fields pp_body) t
+  
+
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy
 
