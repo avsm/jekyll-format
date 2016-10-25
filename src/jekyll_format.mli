@@ -30,6 +30,10 @@ val fields : t -> fields
 val body : t -> body
 (** [body t] retrieves the blog post content from the blog post *)
 
+val find : string -> fields -> string option
+(** [find key t] retrieves [key] from the YAML front matter, and {!None} if
+    the key is not present. Keys are case-sensitive as per the YAML specification. *)
+
 (** {1 Conversion functions} *)
 
 val of_string : string -> (t, [> Rresult.R.msg ]) Result.result

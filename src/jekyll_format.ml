@@ -37,6 +37,13 @@ let of_string t =
 let fields = fst
 let body = snd
 
+let find key (f:fields) =
+  let key = String.Sub.v key in
+  try
+    List.find (fun (k,_) -> String.Sub.equal key k) f |>
+    snd |> String.Sub.to_string |> fun x -> Some x
+  with Not_found -> None
+
 let pp_body ppf body =
   let open Fmt in
   let pp_list = list ~sep:Format.pp_force_newline String.Sub.pp in

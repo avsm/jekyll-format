@@ -27,15 +27,31 @@ let posts = [
   "anil.recoil.org", "2015-04-02-ocamllabs-2014-review.md", (Ok ());
 ]
 
+let parse_post ~base_dir ~post () =
+  let open Rresult.R.Infix in
+  Bos.OS.File.read (Fpath.(base_dir / post)) >>=
+  Jekyll_format.of_string
+
+let parse_post_exn ~base_dir ~post () =
+  match parse_post ~base_dir ~post () with
+  | Ok r -> r
+  | Error (`Msg m) -> raise Alcotest.Test_error
+
 let test_post ~expect ~base_dir ~post () =
   let test_parse =
     let open Rresult.R.Infix in
-    Bos.OS.File.read (Fpath.(base_dir / post)) >>=
-    Jekyll_format.of_string >>= fun t ->
+    parse_post ~base_dir ~post () >>= fun t ->
     Fmt.pr "%a" JF.pp t;
-    R.ok ()
-  in
+    R.ok () in
   check (result unit rresult_error) post expect test_parse
+
+let test_find ~base_dir ~post () =
+  let open Rresult.R.Infix in
+  parse_post_exn ~base_dir ~post:"simple.md" () |>
+  JF.fields |> fun f ->
+  check (option string) "find success" (JF.find "alice" f) (Some "111");
+  check (option string) "find fail" (JF.find "xalice" f) None;
+  check (option string) "find fail case sensitive" (JF.find "Alice" f) None
 
 let test_set ~base_dir () =
   List.map (fun (subdir, post, expect) ->
