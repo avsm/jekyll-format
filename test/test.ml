@@ -45,24 +45,36 @@ let test_post ~expect ~base_dir ~post () =
     R.ok () in
   check (result unit rresult_error) post expect test_parse
 
-let test_find ~base_dir ~post () =
+let test_find ~base_dir () =
   let open Rresult.R.Infix in
   parse_post_exn ~base_dir ~post:"simple.md" () |>
   JF.fields |> fun f ->
-  check (option string) "find success" (JF.find "alice" f) (Some "111");
-  check (option string) "find fail" (JF.find "xalice" f) None;
-  check (option string) "find fail case sensitive" (JF.find "Alice" f) None
+  check (option string) "find success" (Some "111") (JF.find "alice" f);
+  check (option string) "find fail" None (JF.find "xalice" f);
+  check (option string) "find fail case sensitive" None (JF.find "Alice" f)
 
-let test_set ~base_dir () =
+let test_body ~base_dir () =
+  let open Rresult.R.Infix in
+  parse_post_exn ~base_dir ~post:"simple.md" () |>
+  JF.body |> fun b ->
+  check string "body" "\nbody\ngoes\nhere\n" (JF.body_to_string b)
+
+let test_parsing ~base_dir () =
   List.map (fun (subdir, post, expect) ->
     let base_dir = Fpath.(base_dir / subdir) in
     post, `Quick, (test_post ~expect ~base_dir ~post)
   ) posts
 
+let test_meta ~base_dir () =
+  let base_dir = Fpath.v "test/_posts/basic" in
+  ["find", `Quick, test_find ~base_dir;
+   "body", `Quick, test_body ~base_dir]
+
 let () =
   let base_dir = Fpath.v "test/_posts" in
   Alcotest.run "post parsing" [
-    "markdown", test_set ~base_dir ()
+    "parsing", test_parsing ~base_dir ();
+    "meta", test_meta ~base_dir ();
   ]
 
 (*---------------------------------------------------------------------------

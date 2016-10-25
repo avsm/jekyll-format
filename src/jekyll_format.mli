@@ -30,9 +30,14 @@ val fields : t -> fields
 val body : t -> body
 (** [body t] retrieves the blog post content from the blog post *)
 
+val body_to_string : body -> string
+(** [body_to_string body] serialises the body to an OCaml string, maintaining
+    the original layout and whitespace. *)
+
 val find : string -> fields -> string option
 (** [find key t] retrieves [key] from the YAML front matter, and {!None} if
-    the key is not present. Keys are case-sensitive as per the YAML specification. *)
+    the key is not present. Keys are case-sensitive as per the YAML specification.
+    Whitespace is trimmed around the field value. *)
 
 (** {1 Conversion functions} *)
 

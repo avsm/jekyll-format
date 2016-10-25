@@ -28,7 +28,7 @@ let of_string t =
   | hd::tl ->
      String.Sub.(cut ~sep:(v ":") hd) |> function
      | None -> R.error_msg (E.yaml_field_parse (String.Sub.to_string hd))
-     | Some f -> get_yaml (f :: acc) tl in
+     | Some (k,v) -> get_yaml ((k,String.Sub.trim v) :: acc) tl in
   match lines with
   | [] -> R.error_msg E.yaml_no_start
   | hd::_ when not (is_yaml_delimiter hd) -> R.error_msg E.yaml_no_start
@@ -36,11 +36,11 @@ let of_string t =
 
 let fields = fst
 let body = snd
+let body_to_string b = String.Sub.(concat ~sep:(v "\n") b |> to_string)
 
 let find key (f:fields) =
-  let key = String.Sub.v key in
   try
-    List.find (fun (k,_) -> String.Sub.equal key k) f |>
+    List.find (fun (k,_) -> String.equal (String.Sub.to_string k) key) f |>
     snd |> String.Sub.to_string |> fun x -> Some x
   with Not_found -> None
 
