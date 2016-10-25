@@ -6,7 +6,7 @@ doc: "http://docs.mirage.io/jekyll-format"
 license: "ISC"
 dev-repo: "https://github.com/avsm/jekyll-format.git"
 bug-reports: "https://github.com/avsm/jekyll-format/issues"
-tags: []
+tags: ["org:ocamllabs" "org:mirage"]
 available: [ ocaml-version >= "4.02.3"]
 depends: [
   "ocamlfind" {build}
