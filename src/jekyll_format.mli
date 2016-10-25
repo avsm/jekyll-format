@@ -4,25 +4,51 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-(** Jekyll post parsing library
+(** Jekyll blog post parsing library
+
+    {{:https://jekyllrb.com }Jekyll} is a simple, blog-aware static site
+    generator that takes a template directory of files and turns them into
+    a website. This library exists to parse those blog posts and make them
+    easy to manipulate from OCaml code.
 
     {e %%VERSION%% — {{:%%PKG_HOMEPAGE%% }homepage}} *)
 
-(** {1 Jekyll-format} *)
+(** {1 Types and accessors} *)
+
+type t
+(** [t] is a single Jekyll-format post that has been parsed *)
 
 type fields
-type body
-type t
+(** [fields] represents the YAML front matter in the blog post *)
 
-val of_string : string -> (t, [> Rresult.R.msg ]) result
+type body
+(** [body] represents the blog post content, probably in Markdown format *)
 
 val fields : t -> fields
-val body : t -> body
-val pp_body : body Fmt.t
-val pp_fields : fields Fmt.t
-val pp : t Fmt.t
+(** [fields t] retrieves the YAML front matter fields from the blog post *)
 
-(** {1 Error string} *)
+val body : t -> body
+(** [body t] retrieves the blog post content from the blog post *)
+
+(** {1 Conversion functions} *)
+
+val of_string : string -> (t, [> Rresult.R.msg ]) result
+(** [of_string t] parses a Jekyll-format blog post and either returns a {!t}
+    or signals an error in the result. *)
+
+(** {1 Pretty printers} *)
+
+val pp : t Fmt.t
+(** [pp t] prints out the blog post and YAML front matter, using
+   {!pp_fields} and {!pp_body} respectively. *)
+
+val pp_body : body Fmt.t
+(** [pp_body body] prints out the blog post [body] in the original layout. *)
+
+val pp_fields : fields Fmt.t
+(** [pp_fields f] prints out the YAML front matter in the original layout. *)
+
+(** {1 Error strings} *)
 
 (** These are error strings returned by the parser. They are
     primarily used by the test cases to pattern match on failures
