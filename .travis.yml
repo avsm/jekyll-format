@@ -7,6 +7,7 @@ sudo: false
 env:
  global:
    - PACKAGE="jekyll-format"
+   - PINS="alcotest:https://github.com/avsm/alcotest.git#rresult"
    - PRE_INSTALL_HOOK="cd /home/opam/opam-repository && git pull origin master && opam update -u -y"
  matrix:
    - DISTRO=debian-stable OCAML_VERSION=4.02.3
