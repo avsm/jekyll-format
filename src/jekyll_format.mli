@@ -32,7 +32,7 @@ val body : t -> body
 
 (** {1 Conversion functions} *)
 
-val of_string : string -> (t, [> Rresult.R.msg ]) Result.t
+val of_string : string -> (t, [> Rresult.R.msg ]) Result.result
 (** [of_string t] parses a Jekyll-format blog post and either returns a {!t}
     or signals an error in the result. *)
 
