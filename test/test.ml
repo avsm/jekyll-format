@@ -18,11 +18,13 @@ open Rresult
 
 module JF = Jekyll_format
 
-let success_posts = [
-  "simple.md", (Ok ());
-  "no_start_yaml.md", (R.error_msg JF.E.yaml_no_start);
-  "no_end_yaml.md", (R.error_msg JF.E.yaml_no_end);
-  "field_parse.md", (R.error_msg (JF.E.yaml_field_parse "alice"))
+let posts = [
+  "basic", "simple.md", (Ok ());
+  "basic", "no_start_yaml.md", (R.error_msg JF.E.yaml_no_start);
+  "basic", "no_end_yaml.md", (R.error_msg JF.E.yaml_no_end);
+  "basic", "field_parse.md", (R.error_msg (JF.E.yaml_field_parse "alice"));
+  "anil.recoil.org", "2015-02-18-icfp15-call-for-sponsorships.md", (Ok ());
+  "anil.recoil.org", "2015-04-02-ocamllabs-2014-review.md", (Ok ());
 ]
 
 let test_post ~expect ~base_dir ~post () =
@@ -36,9 +38,10 @@ let test_post ~expect ~base_dir ~post () =
   check (result unit rresult_error) post expect test_parse
 
 let test_set ~base_dir () =
-  List.map (fun (post, expect) ->
+  List.map (fun (subdir, post, expect) ->
+    let base_dir = Fpath.(base_dir / subdir) in
     post, `Quick, (test_post ~expect ~base_dir ~post)
-  ) success_posts
+  ) posts
 
 let () =
   let base_dir = Fpath.v "test/_posts" in
