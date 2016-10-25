@@ -11,7 +11,8 @@ available: [ ocaml-version >= "4.02.3"]
 depends: [
   "ocamlfind" {build}
   "ocamlbuild" {build}
-  "topkg" {build} 
+  "topkg" {build}
+  "result"
   "astring"
   "omd"
   "fmt"
