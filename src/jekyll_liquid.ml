@@ -12,22 +12,21 @@
 open Astring
 module JF = Jekyll_format
 
-type lines = String.Sub.t list
-
-type highlight = {
-  lang: string option;
-  body: lines;
-  linenos: bool;
-}
-
-let highlight ?lang ?(body=[]) ?(linenos=false) () =
-  { lang; body; linenos }
-
-type line =
-  | Text of String.Sub.t
-  | Highlight of highlight
-
 module Tag_parser = struct
+  type lines = String.Sub.t list
+  type highlight = {
+    lang: string option;
+    body: lines;
+    linenos: bool;
+  }
+
+  let pp_highlight ppf {lang; body; linenos} =
+    let open Fmt in
+    pf ppf "lang: %a linenos: %a@,body:@,%a"
+      (option string) lang (list ~sep:(unit "\n") String.Sub.pp) body bool linenos
+
+  let mk_highlight ?lang ?(body=[]) ?(linenos=false) () =
+    { lang; body; linenos }
 
   let extract_tag ~start ~stop s =
     let t = String.Sub.to_string s in
@@ -49,12 +48,16 @@ module Tag_parser = struct
     | Some t ->
        String.Sub.(cuts ~empty:false ~sep:(v " ") t) |>
        List.map String.Sub.to_string |> function
-       | ["highlight"] -> Some (highlight ())
-       | ["highlight";lang] -> Some (highlight ~lang ())
-       | ["highlight";lang;"linenos"] -> Some (highlight ~lang ~linenos:true ())
+       | ["highlight"] -> Some (mk_highlight ())
+       | ["highlight";lang] -> Some (mk_highlight ~lang ())
+       | ["highlight";lang;"linenos"] -> Some (mk_highlight ~lang ~linenos:true ())
        | _ -> None
      
 end
+
+type line =
+| Text of String.Sub.t
+| Highlight of Tag_parser.highlight
  
 let highlight_exn body =
   let rec find_start acc lines =
@@ -74,7 +77,7 @@ let highlight_exn body =
               |false -> find_end (line :: acc) tl
               |true ->
                 let body = List.rev acc in
-                let ent = Highlight (highlight ~body ()) in
+                let ent = Highlight (Tag_parser.mk_highlight ~body ()) in
                 ent, tl
           in
           let ent, tl = find_end [] tl in
@@ -83,7 +86,7 @@ let highlight_exn body =
   find_start [] body |>
   List.map (function
     | Text l -> [l]
-    | Highlight {lang;body} ->
+    | Highlight {Tag_parser.lang;body} ->
        let delim = String.Sub.v "```" in
        delim :: body @ [delim]
   ) |>

@@ -4,24 +4,34 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-open Astring
-
 (** Process Jekyll liquid templates
 
     Currently just a partial implementation that handles certain tags such 
     as code highlighting. *)
 
+(** {1 Liquid tag parsing} *)
+
+open Astring
+
 val highlight_exn : Jekyll_format.body -> Jekyll_format.body
 (** [highlight body] parses the body for Jekyll `{% highlight %} tags and
     transforms them into vanilla Markdown. *)
 
-(** {1 Liquid tag parsing} *)
-
 module Tag_parser : sig
+  val extract_tag :
+    start:string -> stop:string ->
+    String.sub -> String.sub option
 
-  val extract_tag : start:string -> stop:string -> String.sub -> String.sub option
- 
-(*  val highlight : String.sub -> unit  *)
+  type lines = String.Sub.t list
+
+  type highlight = {
+    lang: string option;
+    body: lines;
+    linenos: bool;
+  }
+  val pp_highlight: highlight Fmt.t
+
+  val highlight : String.sub -> highlight option
 end
 
 (*---------------------------------------------------------------------------

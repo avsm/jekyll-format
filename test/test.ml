@@ -22,6 +22,14 @@ let astring_sub =
   end in
   (module M: TESTABLE with type t = M.t)
 
+let highlight_testable =
+   let module M = struct
+    type t = Jekyll_liquid.Tag_parser.highlight
+    let pp = Jekyll_liquid.Tag_parser.pp_highlight
+    let equal = (=)
+  end in
+  (module M: TESTABLE with type t = M.t)
+
 open Rresult
 
 module JF = Jekyll_format
@@ -95,8 +103,21 @@ let test_tag_extraction () =
      |> function None -> None | Some x -> Some (Astring.String.Sub.to_string x))
   ) tags
 
+let test_tag_highlight () =
+  let module T = JL.Tag_parser in
+  let tags = [
+    "{% highlight %}", (Some {T.body=[]; lang=None; linenos=false});
+    "{% highlight ocaml %}", Some {T.body=[]; lang=(Some "ocaml"); linenos=false};
+    "{% highlight ocaml linenos %}", Some {T.body=[]; lang=(Some "ocaml"); linenos=true};
+  ] in
+  List.iter (fun (a,b) ->
+    check (option highlight_testable) a b (T.highlight (Astring.String.Sub.v a))
+  ) tags
+
 let test_tag_parsing () =
-  ["tag", `Quick, test_tag_extraction ]
+  ["tag", `Quick, test_tag_extraction;
+   "tag highlight", `Quick, test_tag_highlight;
+  ]
 
 let () =
   let base_dir = Fpath.v "test/_posts" in
