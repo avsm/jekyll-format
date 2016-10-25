@@ -34,6 +34,12 @@ let of_string t =
   | hd::_ when not (is_yaml_delimiter hd) -> R.error_msg E.yaml_no_start
   | hd::tl -> get_yaml [] tl
 
+exception Parse_failure of string
+let of_string_exn t =
+  match of_string t with
+  | Ok r -> r
+  | Error (`Msg m) -> raise (Parse_failure m)
+
 let fields = fst
 let body = snd
 let body_to_string b = String.Sub.(concat ~sep:(v "\n") b |> to_string)

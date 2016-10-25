@@ -14,9 +14,18 @@ let rresult_error =
   end in
   (module M: TESTABLE with type t = M.t)
 
+let astring_sub =
+  let module M = struct
+    type t = Astring.String.sub
+    let pp = Astring.String.Sub.pp
+    let equal = Astring.String.Sub.equal
+  end in
+  (module M: TESTABLE with type t = M.t)
+
 open Rresult
 
 module JF = Jekyll_format
+module JL = Jekyll_liquid
 
 let posts = [
   "basic", "simple.md", (Ok ());
@@ -71,11 +80,30 @@ let test_meta ~base_dir () =
   ["find", `Quick, test_find ~base_dir;
    "body", `Quick, test_body ~base_dir]
 
+let test_tag_extraction () =
+  let tags = [
+    "{% highlight %}", (Some "highlight");
+    "{% highlight foo %}", (Some "highlight foo");
+    "%} {%", None;
+    "{%%}", None;
+    "{% %}", None;
+    "{% f %}", (Some "f");
+  ] in
+  List.iter (fun (a,b) ->
+    check (option string) "tag extract" b
+    (JL.Tag_parser.extract_tag ~start:"{%" ~stop:"%}" (Astring.String.Sub.v a)
+     |> function None -> None | Some x -> Some (Astring.String.Sub.to_string x))
+  ) tags
+
+let test_tag_parsing () =
+  ["tag", `Quick, test_tag_extraction ]
+
 let () =
   let base_dir = Fpath.v "test/_posts" in
   Alcotest.run "post parsing" [
     "parsing", test_parsing ~base_dir ();
     "meta", test_meta ~base_dir ();
+    "tags", test_tag_parsing ()
   ]
 
 (*---------------------------------------------------------------------------

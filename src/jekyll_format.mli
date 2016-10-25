@@ -21,7 +21,7 @@ type t
 type fields
 (** [fields] represents the YAML front matter in the blog post *)
 
-type body
+type body = Astring.String.Sub.t list
 (** [body] represents the blog post content, probably in Markdown format *)
 
 val fields : t -> fields
@@ -45,6 +45,11 @@ val keys : fields -> string list
 val of_string : string -> (t, [> Rresult.R.msg ]) Result.result
 (** [of_string t] parses a Jekyll-format blog post and either returns a {!t}
     or signals an error in the result. *)
+
+exception Parse_failure of string
+val of_string_exn : string -> t
+(** [of_string_exn t] parses a Jekyll-format blog post and either returns a {!t}
+    or raises a {!Parse_failure} exception with the error string. *)
 
 val body_to_string : body -> string
 (** [body_to_string body] serialises the body to an OCaml string, maintaining
