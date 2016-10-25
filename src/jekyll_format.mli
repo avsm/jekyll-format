@@ -34,7 +34,7 @@ val body : t -> body
 
 val find : string -> fields -> string option
 (** [find key t] retrieves the first [key] from the YAML front matter, and
-    {!None} if the key is not present. Keys are case-sensitive as per the
+    [None] if the key is not present. Keys are case-sensitive as per the
     YAML specification.  Whitespace is trimmed around the field value. *)
 
 val keys : fields -> string list
