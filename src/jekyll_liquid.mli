@@ -17,22 +17,34 @@ val highlight_exn : Jekyll_format.body -> Jekyll_format.body
 (** [highlight body] parses the body for Jekyll `{% highlight %} tags and
     transforms them into vanilla Markdown. *)
 
+(** Functions for parsing individual Liquid template tags *)
 module Tag_parser : sig
   val extract_tag :
-    start:string -> stop:string ->
-    String.sub -> String.sub option
+    start:string -> stop:string -> String.sub -> String.sub option
+  (** [extract_tag ~start ~stop s] will extract a substring that
+    represents the [text] in ["<start><ws><text><ws><stop>"]. Whitespace
+    is trimmed, and [None] is returned if non-empty text could not
+    be parsed. *)
 
   type lines = String.Sub.t list
+  (** [lines] represents a list of lines that are substrings from
+    a larger string. *)
 
   type highlight = {
-    lang: string option;
-    body: lines;
-    linenos: bool;
+    lang: string option; (** optional language of syntax *)
+    body: lines;  (** code to be highlighted *)
+    linenos: bool;  (** whether line numbers should be emitted *)
   }
+  (** [highlight] represents the various syntax highlighting options. *)
+
   val pp_highlight: highlight Fmt.t
+  (** [pp_highlight] formats a {!highlight} in human-readable format. *)
 
   val highlight : String.sub -> highlight option
+  (** [highlight s] attempts to parse a [{% highlight %}] tag. *)
+
   val endhighlight : String.sub -> bool
+  (** [endhighlight s] checks if a [{% endhighlight %}] tag is present. *)
 end
 
 (*---------------------------------------------------------------------------
