@@ -31,6 +31,7 @@ let highlight_testable =
   (module M: TESTABLE with type t = M.t)
 
 open Rresult
+open Astring
 
 module JF = Jekyll_format
 module JL = Jekyll_liquid
@@ -99,8 +100,8 @@ let test_tag_extraction () =
   ] in
   List.iter (fun (a,b) ->
     check (option string) "tag extract" b
-    (JL.Tag_parser.extract_tag ~start:"{%" ~stop:"%}" (Astring.String.Sub.v a)
-     |> function None -> None | Some x -> Some (Astring.String.Sub.to_string x))
+    (JL.Tag_parser.extract_tag ~start:"{%" ~stop:"%}" (String.Sub.v a)
+     |> function None -> None | Some x -> Some (String.Sub.to_string x))
   ) tags
 
 let test_tag_highlight () =
@@ -111,12 +112,25 @@ let test_tag_highlight () =
     "{% highlight ocaml linenos %}", Some {T.body=[]; lang=(Some "ocaml"); linenos=true};
   ] in
   List.iter (fun (a,b) ->
-    check (option highlight_testable) a b (T.highlight (Astring.String.Sub.v a))
+    check (option highlight_testable) a b (T.highlight (String.Sub.v a))
   ) tags
+
+let test_tag_endhighlight () =
+  let module T = JL.Tag_parser in
+  check bool "endhighlight ok" true (T.endhighlight (String.Sub.v "{% endhighlight %}"));
+  check bool "endhighlight fail" false (T.endhighlight (String.Sub.v "{% xendhighlight %}"))
+
+let test_delimit_highlight () =
+  let module T = JL.Tag_parser in
+  let s = String.Sub.(cuts ~sep:(v "\n") (v "{% highlight ocaml %}\nfoo\nbar\n{% endhighlight %}")) in
+  let h = JL.highlight_exn s |> JF.body_to_string in
+  check string "delimit highlight" "```\nfoo\nbar\n```" h
 
 let test_tag_parsing () =
   ["tag", `Quick, test_tag_extraction;
    "tag highlight", `Quick, test_tag_highlight;
+   "tag endhighlight", `Quick, test_tag_endhighlight;
+   "tag delimit highlight", `Quick, test_delimit_highlight
   ]
 
 let () =

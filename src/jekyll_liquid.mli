@@ -32,6 +32,7 @@ module Tag_parser : sig
   val pp_highlight: highlight Fmt.t
 
   val highlight : String.sub -> highlight option
+  val endhighlight : String.sub -> bool
 end
 
 (*---------------------------------------------------------------------------

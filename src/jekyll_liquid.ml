@@ -41,7 +41,7 @@ module Tag_parser = struct
             if last <= first then None else
             String.Sub.with_index_range ~first ~last s |> fun t ->
             Some (String.Sub.trim t)
-  
+
   let highlight t =
     extract_tag ~start:"{%" ~stop:"%}" t |> function
     | None -> None
@@ -52,7 +52,12 @@ module Tag_parser = struct
        | ["highlight";lang] -> Some (mk_highlight ~lang ())
        | ["highlight";lang;"linenos"] -> Some (mk_highlight ~lang ~linenos:true ())
        | _ -> None
-     
+
+  let endhighlight t =
+    extract_tag ~start:"{%" ~stop:"%}" t |> function
+    | None -> false
+    | Some sub -> String.Sub.to_string sub = "endhighlight"
+
 end
 
 type line =
@@ -64,21 +69,19 @@ let highlight_exn body =
     match lines with
     |[] -> List.rev acc
     |line::tl ->
-       let l = String.Sub.to_string line in
-       match String.is_prefix ~affix:"{% highlight" l with
-       |false -> find_start (Text line :: acc) tl
-       |true ->
+       match Tag_parser.highlight line with
+       | None -> find_start (Text line :: acc) tl
+       | Some h ->
           let rec find_end acc lines =
             match lines with
             |[] -> raise (JF.Parse_failure "Unable to find {% endhighlight %} tag")
             |line::tl ->
-              let l = String.Sub.to_string line in
-              match String.is_prefix ~affix:"{% endhighlight" l with
-              |false -> find_end (line :: acc) tl
-              |true ->
-                let body = List.rev acc in
-                let ent = Highlight (Tag_parser.mk_highlight ~body ()) in
-                ent, tl
+              match Tag_parser.endhighlight line with
+              | false -> find_end (line::acc) tl
+              | true ->
+                  let body = List.rev acc in
+                  let ent = Highlight (Tag_parser.mk_highlight ~body ()) in
+                  ent, tl
           in
           let ent, tl = find_end [] tl in
           find_start (ent :: acc) tl
