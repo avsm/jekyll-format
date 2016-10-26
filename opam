@@ -17,6 +17,8 @@ depends: [
   "omd"
   "fmt"
   "rresult"
+  "ptime"
+  "fpath"
   "alcotest" {test}
   "bos" {test}
 ]

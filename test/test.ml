@@ -84,11 +84,6 @@ let test_parsing ~base_dir () =
     post, `Quick, (test_post ~expect ~base_dir ~post)
   ) posts
 
-let test_meta ~base_dir () =
-  let base_dir = Fpath.v "test/_posts/basic" in
-  ["find", `Quick, test_find ~base_dir;
-   "body", `Quick, test_body ~base_dir]
-
 let test_tag_extraction () =
   let tags = [
     "{% highlight %}", (Some "highlight");
@@ -126,6 +121,42 @@ let test_delimit_highlight () =
   let h = JL.highlight_exn s |> JF.body_to_string in
   check string "delimit highlight" "```\nfoo\nbar\n```" h
 
+let option_exn = function | None -> raise Test_error | Some e -> e
+
+let test_filename_date () =
+  let datev d = option_exn (Ptime.of_date d) in
+  let fs = [
+    "2011-03-05-foo-bar.md", Ok (datev (2011,03,05), "foo-bar", "md");
+    "foo-bar.md", Error (`Msg "Unable to find a date component in filename");
+    "2011-foo-bar.md", Error (`Msg "Empty title not allowed");
+    "", Error (`Msg "Unable to find a date component in filename");
+    "2011-99-99-foo.md", Error (`Msg "Invalid date/time");
+  ] in
+  let check_fn = Fmt.(testable (fun ppf (a,b,c) -> pf ppf "@,%a@.%a@.%a@," Ptime.pp a string b string c)) (=) in
+  List.iter (fun (f,b) ->
+    check (result check_fn rresult_msg) ("filename_date: "^f) b (JF.parse_filename f)
+  ) fs
+
+let test_datetime_parse () =
+  let ptime_check = testable Ptime.pp Ptime.equal in
+  let date d = Ptime.of_date d |> option_exn in
+  let datetime d t = Ptime.of_date_time (d,(t,0)) |> option_exn in
+  let datetimetz d t tz = Ptime.of_date_time (d,(t,tz)) |> option_exn in
+  [ "2016-03-04", date (2016,03,04);
+    "2016-04-05", date (2016,04,05);
+    "2016-04-05 01:02:33", datetime (2016,04,05) (01,02,33);
+    "2016-04-05 01:02:59 0100", datetimetz (2016,04,05) (01,02,59) 3600;
+    "2016-04-05 01:02:59 +0200", datetimetz (2016,04,05) (01,02,59) 7200;
+    "2016-04-05 01:02:59 -02:00", datetimetz (2016,04,05) (01,02,59) (-7200);
+    "2016-04-05 01:02:59 -02::::00", datetimetz (2016,04,05) (01,02,59) (-7200);
+  ] |>
+  List.iter (fun (f,e) -> check ptime_check ("datetime " ^ f) e (JF.parse_date_exn f))
+
+let test_meta ~base_dir () =
+  let base_dir = Fpath.v "test/_posts/basic" in
+  ["find", `Quick, test_find ~base_dir;
+   "body", `Quick, test_body ~base_dir]
+
 let test_tag_parsing () =
   ["tag", `Quick, test_tag_extraction;
    "tag highlight", `Quick, test_tag_highlight;
@@ -133,12 +164,17 @@ let test_tag_parsing () =
    "tag delimit highlight", `Quick, test_delimit_highlight
   ]
 
+let test_date_parsing () =
+  ["date", `Quick, test_filename_date;
+   "datetime", `Quick, test_datetime_parse;]
+
 let () =
   let base_dir = Fpath.v "test/_posts" in
   Alcotest.run "post parsing" [
     "parsing", test_parsing ~base_dir ();
     "meta", test_meta ~base_dir ();
-    "tags", test_tag_parsing ()
+    "tags", test_tag_parsing ();
+    "date", test_date_parsing ();
   ]
 
 (*---------------------------------------------------------------------------

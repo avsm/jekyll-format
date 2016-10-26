@@ -46,7 +46,6 @@ val of_string : string -> (t, [> Rresult.R.msg ]) Result.result
 (** [of_string t] parses a Jekyll-format blog post and either returns a {!t}
     or signals an error in the result. *)
 
-exception Parse_failure of string
 val of_string_exn : string -> t
 (** [of_string_exn t] parses a Jekyll-format blog post and either returns a {!t}
     or raises a {!Parse_failure} exception with the error string. *)
@@ -54,6 +53,31 @@ val of_string_exn : string -> t
 val body_to_string : body -> string
 (** [body_to_string body] serialises the body to an OCaml string, maintaining
     the original layout and whitespace. *)
+
+val parse_filename : string -> (Ptime.t * string * string, [> Rresult.R.msg ]) result
+(** [parse_filename f] parses a Jekyll format filename [YEAR-MONTH-DAY-title.MARKUP]
+    and returns the time, title and markup components respectively. If the
+    time could not be parsed, then the header is assumed to be the title and
+    [None] is returned for the time. *)
+
+val parse_filename_exn : string -> Ptime.t * string * string
+(** [parse_filename_exn f] operates as {!parse_filename} except that it raises
+    a {!Parse_failure} in the error case. *)
+
+val parse_date : ?and_time:bool -> string -> (Ptime.t, [> Rresult.R.msg ]) result
+(** [parse_date ?and_time s] parses a Jekyll format date field in
+    [YYYY-MM-DD HH:MM:SS +/-TT:TT] format, where the HMS and timezone
+    components are optional.  [and_time] defaults to true and causes
+    the non-date components to be parsed; setting it to false only
+    causes the YMD portions to be parsed. *)
+
+val parse_date_exn : ?and_time:bool -> string -> Ptime.t
+(** [parse_date_exn ?and_time s] operates as {!parse_date} except that it
+    raises a {!Parse_failure} in the error case. *)
+
+exception Parse_failure of string
+(** Exception raised on parse failure by the [_exn] functions in this module.
+    The argument is a human-readable error message. *)
 
 (** {1 Pretty printers} *)
 

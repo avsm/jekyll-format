@@ -69,7 +69,93 @@ let pp ppf t =
   let open Fmt in
   pf ppf "\n---\n";
   pf ppf "%a" (pair ~sep:(unit "\n---\n") pp_fields pp_body) t
-  
+
+let parse_date_exn ?(and_time=true) s =
+  let ymd,hms,tz =
+    match and_time with
+    |true ->
+      (match String.cuts ~sep:" " s with
+      |[ymd] -> (Some ymd), None, None
+      |[ymd;hms] -> (Some ymd), (Some hms), None
+      |ymd::hms::tz::_ -> (Some ymd), (Some hms), (Some tz)
+      |[] -> None, None, None)
+    |false -> Some s, None, None
+  in
+  let dfail s = raise (Parse_failure s) in
+  match ymd with
+  | None -> dfail "No valid year/month/date found"
+  | Some ymd ->
+      let to_int l s =
+        try int_of_string s
+        with _ -> dfail (l ^ " component is not a valid integer") in
+      let date =
+        match String.cuts ~sep:"-" ymd with
+        |[y;m;d] -> (to_int "year" y), (to_int "month" m), (to_int "date" d)
+        |[y;m] -> dfail "No date component found"
+        |[y] -> dfail "No month or date component found"
+        |[] -> dfail "Empty date component"
+        |_ -> dfail "Date component must be in form YYYY-MM-DD" in
+      let time =
+        match hms with
+        | None -> 0,0,0
+        | Some hms ->
+            match String.cuts ~sep:":" hms with
+            |[h;m;s] -> (to_int "hour" h), (to_int "minute" m), (to_int "seconds" s)
+            |[h;m] -> (to_int "hour" h), (to_int "minute" m), 0
+            |[h] -> (to_int "hour" h), 0, 0
+            |[] -> dfail "Empty time component"
+            |_ -> dfail "Time component must be in form HH:MM:SS" in
+      let tz = (* can be [+-]HH[:]MM *)
+        match tz with
+        | None -> 0
+        | Some tz -> begin
+           String.filter (function |'0'..'9'|'+'|'-' -> true |_->false) tz |> fun tz ->
+           let off,hh,mn =
+             match String.length tz with
+             | 5 ->
+                let hh = String.with_range ~first:1 ~len:2 tz |> to_int "timezone hour" in
+                let mn = String.with_range ~first:3 ~len:2 tz |> to_int "timezone min" in
+                let off = match String.get_head tz with
+                 | '+' -> 1 | '-' -> (-1) | _ -> dfail "Invalid timezone direction" in
+                off,hh,mn
+             | 4 ->
+                let hh = String.with_range ~first:0 ~len:2 tz |> to_int "timezone hour" in
+                let mn = String.with_range ~first:2 ~len:2 tz |> to_int "timezone min" in
+                let off = 1 in
+                off,hh,mn
+             | _ -> dfail ("Unable to parse timezone " ^ tz)
+           in
+           ((hh * 3600) + (mn * 1800)) * off
+        end
+      in
+      Ptime.of_date_time (date, (time,tz)) |> function
+      | None -> dfail "Invalid date/time"
+      | Some p -> p
+
+let parse_date ?(and_time=true) s =
+  try R.ok (parse_date_exn ~and_time s) with Parse_failure m -> R.error_msg m
+
+let parse_filename s =
+  let open R.Infix in
+  let dashc = String.concat ~sep:"-" in
+  match String.cuts ~sep:"-" s with
+  | y::m::d::title -> begin
+     dashc title |> function
+     | "" -> R.error_msg "Empty title not allowed"
+     | title ->
+        Fpath.v title |>
+        Fpath.split_ext |> fun (title, ext) ->
+        String.drop ~max:1 ext |> fun ext ->
+        Fpath.to_string title |> fun title ->
+        parse_date ~and_time:false (dashc [y;m;d]) >>| fun time ->
+       (time, title, ext)
+  end
+  | _ -> R.error_msg "Unable to find a date component in filename"
+ 
+let parse_filename_exn s =
+  match parse_filename s with
+  | Ok r -> r
+  | Error (`Msg m) -> raise (Parse_failure m)
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy
