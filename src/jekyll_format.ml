@@ -35,10 +35,12 @@ let of_string t =
   | hd::tl -> get_yaml [] tl
 
 exception Parse_failure of string
-let of_string_exn t =
-  match of_string t with
+
+let result_to_exn = function
   | Ok r -> r
   | Error (`Msg m) -> raise (Parse_failure m)
+
+let of_string_exn t = of_string t |> result_to_exn
 
 let fields = fst
 let body = snd
@@ -153,20 +155,26 @@ let parse_filename s =
   | _ -> R.error_msg "Unable to find a date component in filename"
  
 let parse_filename_exn s =
-  match parse_filename s with
-  | Ok r -> r
-  | Error (`Msg m) -> raise (Parse_failure m)
+  parse_filename s |> result_to_exn
 
 let title ?fname f =
+  let open R.Infix in
   match find "title" f with
-  | Some t -> Some t
+  | Some t -> Ok t
   | None ->
       match fname with
-      | None -> None
-      | Some fname ->
-          match parse_filename fname with
-          | Error _ -> None
-          | Ok (_,title,_) -> Some title
+      | None -> R.error_msg "Unable to find a title key or parse the filename for it"
+      | Some fname -> parse_filename fname >>| fun (_,title,_) -> title
+
+let date ?fname f =
+  let open R.Infix in
+  match (find "date" f), fname with
+  | Some d, _ -> parse_date ~and_time:true d
+  | None, Some fname -> parse_filename fname >>| fun (date,_,_) -> date
+  | None, None -> R.error_msg "Unable to find a date key or parse the filename for it"
+
+let date_exn ?fname f = date ?fname f |> result_to_exn
+let title_exn ?fname f = title ?fname f |> result_to_exn
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy

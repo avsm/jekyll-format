@@ -40,10 +40,23 @@ val find : string -> fields -> string option
 val keys : fields -> string list
 (** [keys f] retrieves all of the key names in the YAML front matter. *)
 
-val title : ?fname:string -> fields -> string option
+val title : ?fname:string -> fields -> (string, [> Rresult.R.msg ]) Result.result
 (** [title ?fname f] will query the title from the YAML metadata, and fallback
     to parsing the optional [fname] filename of the post if no explicit key
     is found.  If nothing works then [None] is returned. *)
+
+val title_exn : ?fname:string -> fields -> string
+(** [title_exn ?fname f] operates as {!title} except that it raises a
+    {!Parse_failure} exception on error. *) 
+
+val date : ?fname:string -> fields -> (Ptime.t, [> Rresult.R.msg ]) Result.result
+(** [date ?fname f] will query the post date from the YAML metadata, and
+    fallback to parsing the optional [fname] filename of the post if no explicit
+    key is found. *)
+
+val date_exn : ?fname:string -> fields -> Ptime.t
+(** [date_exn ?fname f] operates as {!date_exn} except that it raises a
+    {!Parse_failure} in the error case. *)
 
 (** {1 Conversion functions} *)
 
