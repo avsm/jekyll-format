@@ -40,6 +40,11 @@ val find : string -> fields -> string option
 val keys : fields -> string list
 (** [keys f] retrieves all of the key names in the YAML front matter. *)
 
+val title : ?fname:string -> fields -> string option
+(** [title ?fname f] will query the title from the YAML metadata, and fallback
+    to parsing the optional [fname] filename of the post if no explicit key
+    is found.  If nothing works then [None] is returned. *)
+
 (** {1 Conversion functions} *)
 
 val of_string : string -> (t, [> Rresult.R.msg ]) Result.result
@@ -54,7 +59,7 @@ val body_to_string : body -> string
 (** [body_to_string body] serialises the body to an OCaml string, maintaining
     the original layout and whitespace. *)
 
-val parse_filename : string -> (Ptime.t * string * string, [> Rresult.R.msg ]) result
+val parse_filename : string -> (Ptime.t * string * string, [> Rresult.R.msg ]) Result.result
 (** [parse_filename f] parses a Jekyll format filename [YEAR-MONTH-DAY-title.MARKUP]
     and returns the time, title and markup components respectively. If the
     time could not be parsed, then the header is assumed to be the title and
@@ -64,7 +69,7 @@ val parse_filename_exn : string -> Ptime.t * string * string
 (** [parse_filename_exn f] operates as {!parse_filename} except that it raises
     a {!Parse_failure} in the error case. *)
 
-val parse_date : ?and_time:bool -> string -> (Ptime.t, [> Rresult.R.msg ]) result
+val parse_date : ?and_time:bool -> string -> (Ptime.t, [> Rresult.R.msg ]) Result.result
 (** [parse_date ?and_time s] parses a Jekyll format date field in
     [YYYY-MM-DD HH:MM:SS +/-TT:TT] format, where the HMS and timezone
     components are optional.  [and_time] defaults to true and causes

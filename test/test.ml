@@ -6,7 +6,7 @@
 
 open Alcotest
 (* This can be contributed back to Alcotest *)
-let rresult_error =
+let rresult_msg =
   let module M = struct
     type t = Rresult.R.msg
     let pp = Rresult.R.pp_msg
@@ -61,7 +61,7 @@ let test_post ~expect ~base_dir ~post () =
     parse_post ~base_dir ~post () >>= fun t ->
     Fmt.pr "%a" JF.pp t;
     R.ok () in
-  check (result unit rresult_error) post expect test_parse
+  check (result unit rresult_msg) post expect test_parse
 
 let test_find ~base_dir () =
   let open Rresult.R.Infix in

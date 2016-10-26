@@ -157,6 +157,17 @@ let parse_filename_exn s =
   | Ok r -> r
   | Error (`Msg m) -> raise (Parse_failure m)
 
+let title ?fname f =
+  match find "title" f with
+  | Some t -> Some t
+  | None ->
+      match fname with
+      | None -> None
+      | Some fname ->
+          match parse_filename fname with
+          | Error _ -> None
+          | Ok (_,title,_) -> Some title
+
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy
 
