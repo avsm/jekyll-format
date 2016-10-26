@@ -4,9 +4,11 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-(** Process Jekyll liquid templates
+(** Jekyll Liquid templates parsing module
 
-    Currently just a partial implementation that handles certain tags such 
+    {{:http://shopify.github.io/liquid/}Liquid templates} are a library for
+    flexible web apps.  The original library is in Ruby, and this module is
+    currently just a partial implementation that handles certain tags such 
     as code highlighting. *)
 
 (** {1 Liquid tag parsing} *)

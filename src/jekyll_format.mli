@@ -4,14 +4,7 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-(** Jekyll blog post parsing library
-
-    {{:https://jekyllrb.com }Jekyll} is a simple, blog-aware static site
-    generator that takes a template directory of files and turns them into
-    a website. This library exists to parse those blog posts and make them
-    easy to manipulate from OCaml code.
-
-    {e %%VERSION%% — {{:%%PKG_HOMEPAGE%% }homepage}} *)
+(** Jekyll blog post parsing module *)
 
 (** {1 Types and accessors} *)
 

@@ -4,11 +4,6 @@
    %%NAME%% %%VERSION%%
   ---------------------------------------------------------------------------*)
 
-(** Process Jekyll liquid templates
-
-    Currently just a partial implementation that handles certain tags such 
-    as code highlighting. *)
-
 open Astring
 module JF = Jekyll_format
 
