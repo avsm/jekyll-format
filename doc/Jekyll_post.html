@@ -1,0 +1,92 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="next" href="Jekyll_format.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Jekyll_post" rel="Chapter" href="Jekyll_post.html">
+<link title="Jekyll_format" rel="Chapter" href="Jekyll_format.html">
+<link title="Jekyll_liquid" rel="Chapter" href="Jekyll_liquid.html"><title>Jekyll_post</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Jekyll_format.html" title="Jekyll_format">Next</a>
+</div>
+<h1>Module <a href="type_Jekyll_post.html">Jekyll_post</a></h1>
+
+<pre><span class="keyword">module</span> Jekyll_post: <code class="code"><span class="keyword">sig</span></code> <a href="Jekyll_post.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Jekyll blog post handling library
+<p>
+
+    <a href="https://jekyllrb.com ">Jekyll</a> is a simple, blog-aware static site
+    generator that takes a template directory of files and turns them into
+    a website. This library exists to parse those blog posts and make them
+    easy to manipulate from OCaml code.
+<p>
+
+    <em>v0.0.1-1-g16aca9d — <a href="https://github.com/avsm/jekyll-format ">homepage</a></em><br>
+</div>
+<hr width="100%">
+
+<pre><code><span id="TYPEt"><span class="keyword">type</span> <code class="type"></code>t</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.fname">fname</span>&nbsp;: <code class="type">string option</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.title">title</span>&nbsp;: <code class="type">string</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.date">date</span>&nbsp;: <code class="type">Ptime.t</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.body">body</span>&nbsp;: <code class="type"><a href="Jekyll_format.html#TYPEbody">Jekyll_format.body</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTt.fields">fields</span>&nbsp;: <code class="type"><a href="Jekyll_format.html#TYPEfields">Jekyll_format.fields</a></code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info ">
+<code class="code">t</code> is a single Jekyll-format post that has been parsed<br>
+</div>
+
+
+<pre><span id="VALof_string"><span class="keyword">val</span> of_string</span> : <code class="type">?fname:string -> string -> (<a href="Jekyll_post.html#TYPEt">t</a>, [> Rresult.R.msg ]) Result.result</code></pre><div class="info ">
+<code class="code">of_string ?fname body</code><br>
+</div>
+
+<pre><span id="VALof_string_exn"><span class="keyword">val</span> of_string_exn</span> : <code class="type">?fname:string -> string -> <a href="Jekyll_post.html#TYPEt">t</a></code></pre><div class="info ">
+<code class="code">of_string_exn ?fname body</code> operates as <a href="Jekyll_post.html#VALof_string"><code class="code"><span class="constructor">Jekyll_post</span>.of_string</code></a> except that it raises
+    a <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> exception on error.<br>
+</div>
+
+<pre><span id="VALcompare"><span class="keyword">val</span> compare</span> : <code class="type"><a href="Jekyll_post.html#TYPEt">t</a> -> <a href="Jekyll_post.html#TYPEt">t</a> -> int</code></pre><div class="info ">
+<code class="code">compare a b</code> will compare by date and then lexigraphically on the title<br>
+</div>
+</body></html>

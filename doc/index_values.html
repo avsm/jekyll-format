@@ -1,0 +1,187 @@
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Jekyll_post" rel="Chapter" href="Jekyll_post.html">
+<link title="Jekyll_format" rel="Chapter" href="Jekyll_format.html">
+<link title="Jekyll_liquid" rel="Chapter" href="Jekyll_liquid.html"><title>Index of values</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;</div>
+<h1>Index of values</h1>
+<table>
+<tr><td align="left"><br>B</td></tr>
+<tr><td><a href="Jekyll_format.html#VALbody">body</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">body t</code> retrieves the blog post content from the blog post
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALbody_to_string">body_to_string</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">body_to_string body</code> serialises the body to an OCaml string, maintaining
+    the original layout and whitespace.
+</div>
+</td></tr>
+<tr><td align="left"><br>C</td></tr>
+<tr><td><a href="Jekyll_post.html#VALcompare">compare</a> [<a href="Jekyll_post.html">Jekyll_post</a>]</td>
+<td><div class="info">
+<code class="code">compare a b</code> will compare by date and then lexigraphically on the title
+</div>
+</td></tr>
+<tr><td align="left"><br>D</td></tr>
+<tr><td><a href="Jekyll_format.html#VALdate">date</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">date ?fname f</code> will query the post date from the YAML metadata, and
+    fallback to parsing the optional <code class="code">fname</code> filename of the post if no explicit
+    key is found.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALdate_exn">date_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">date_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALdate_exn"><code class="code"><span class="constructor">Jekyll_format</span>.date_exn</code></a> except that it raises a
+    <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> in the error case.
+</div>
+</td></tr>
+<tr><td align="left"><br>E</td></tr>
+<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALendhighlight">endhighlight</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<td><div class="info">
+<code class="code">endhighlight s</code> checks if a <code class="code">{% endhighlight %}</code> tag is present.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALextract_tag">extract_tag</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<td><div class="info">
+<code class="code">extract_tag ~start ~stop s</code> will extract a substring that
+    represents the <code class="code">text</code> in <code class="code"><span class="string">"&lt;start&gt;&lt;ws&gt;&lt;text&gt;&lt;ws&gt;&lt;stop&gt;"</span></code>.
+</div>
+</td></tr>
+<tr><td align="left"><br>F</td></tr>
+<tr><td><a href="Jekyll_format.html#VALfields">fields</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">fields t</code> retrieves the YAML front matter fields from the blog post
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALfind">find</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">find key t</code> retrieves the first <code class="code">key</code> from the YAML front matter, and
+    <code class="code"><span class="constructor">None</span></code> if the key is not present.
+</div>
+</td></tr>
+<tr><td align="left"><br>H</td></tr>
+<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALhighlight">highlight</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<td><div class="info">
+<code class="code">highlight s</code> attempts to parse a <code class="code">{% highlight %}</code> tag.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_liquid.html#VALhighlight_exn">highlight_exn</a> [<a href="Jekyll_liquid.html">Jekyll_liquid</a>]</td>
+<td><div class="info">
+<code class="code">highlight body</code> parses the body for Jekyll ` tags and
+    transforms them into vanilla Markdown.
+</div>
+</td></tr>
+<tr><td align="left"><br>K</td></tr>
+<tr><td><a href="Jekyll_format.html#VALkeys">keys</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">keys f</code> retrieves all of the key names in the YAML front matter.
+</div>
+</td></tr>
+<tr><td align="left"><br>O</td></tr>
+<tr><td><a href="Jekyll_format.html#VALof_string">of_string</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">of_string t</code> parses a Jekyll-format blog post and either returns a <a href="Jekyll_format.html#TYPEt"><code class="code"><span class="constructor">Jekyll_format</span>.t</code></a>
+    or signals an error in the result.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_post.html#VALof_string">of_string</a> [<a href="Jekyll_post.html">Jekyll_post</a>]</td>
+<td><div class="info">
+<code class="code">of_string ?fname body</code>
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALof_string_exn">of_string_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">of_string_exn t</code> parses a Jekyll-format blog post and either returns a <a href="Jekyll_format.html#TYPEt"><code class="code"><span class="constructor">Jekyll_format</span>.t</code></a>
+    or raises a <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> exception with the error string.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_post.html#VALof_string_exn">of_string_exn</a> [<a href="Jekyll_post.html">Jekyll_post</a>]</td>
+<td><div class="info">
+<code class="code">of_string_exn ?fname body</code> operates as <a href="Jekyll_post.html#VALof_string"><code class="code"><span class="constructor">Jekyll_post</span>.of_string</code></a> except that it raises
+    a <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> exception on error.
+</div>
+</td></tr>
+<tr><td align="left"><br>P</td></tr>
+<tr><td><a href="Jekyll_format.html#VALparse_date">parse_date</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">parse_date ?and_time s</code> parses a Jekyll format date field in
+    <code class="code"><span class="constructor">YYYY</span>-<span class="constructor">MM</span>-<span class="constructor">DD</span> <span class="constructor">HH</span>:<span class="constructor">MM</span>:<span class="constructor">SS</span> +/-<span class="constructor">TT</span>:<span class="constructor">TT</span></code> format, where the HMS and timezone
+    components are optional.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALparse_date_exn">parse_date_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">parse_date_exn ?and_time s</code> operates as <a href="Jekyll_format.html#VALparse_date"><code class="code"><span class="constructor">Jekyll_format</span>.parse_date</code></a> except that it
+    raises a <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> in the error case.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALparse_filename">parse_filename</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">parse_filename f</code> parses a Jekyll format filename <code class="code"><span class="constructor">YEAR</span>-<span class="constructor">MONTH</span>-<span class="constructor">DAY</span>-title.<span class="constructor">MARKUP</span></code>
+    and returns the time, title and markup components respectively.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALparse_filename_exn">parse_filename_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">parse_filename_exn f</code> operates as <a href="Jekyll_format.html#VALparse_filename"><code class="code"><span class="constructor">Jekyll_format</span>.parse_filename</code></a> except that it raises
+    a <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> in the error case.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALpp">pp</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">pp t</code> prints out the blog post and YAML front matter, using
+   <a href="Jekyll_format.html#VALpp_fields"><code class="code"><span class="constructor">Jekyll_format</span>.pp_fields</code></a> and <a href="Jekyll_format.html#VALpp_body"><code class="code"><span class="constructor">Jekyll_format</span>.pp_body</code></a> respectively.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALpp_body">pp_body</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">pp_body body</code> prints out the blog post <code class="code">body</code> in the original layout.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALpp_fields">pp_fields</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">pp_fields f</code> prints out the YAML front matter in the original layout.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALpp_highlight">pp_highlight</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<td><div class="info">
+<code class="code">pp_highlight</code> formats a <a href="Jekyll_liquid.Tag_parser.html#VALhighlight"><code class="code"><span class="constructor">Jekyll_liquid</span>.<span class="constructor">Tag_parser</span>.highlight</code></a> in human-readable format.
+</div>
+</td></tr>
+<tr><td align="left"><br>T</td></tr>
+<tr><td><a href="Jekyll_format.html#VALtitle">title</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">title ?fname f</code> will query the title from the YAML metadata, and fallback
+    to parsing the optional <code class="code">fname</code> filename of the post if no explicit key
+    is found.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALtitle_exn">title_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">title_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALtitle"><code class="code"><span class="constructor">Jekyll_format</span>.title</code></a> except that it raises a
+    <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> exception on error.
+</div>
+</td></tr>
+<tr><td align="left"><br>Y</td></tr>
+<tr><td><a href="Jekyll_format.E.html#VALyaml_field_parse">yaml_field_parse</a> [<a href="Jekyll_format.E.html">Jekyll_format.E</a>]</td>
+<td></td></tr>
+<tr><td><a href="Jekyll_format.E.html#VALyaml_no_end">yaml_no_end</a> [<a href="Jekyll_format.E.html">Jekyll_format.E</a>]</td>
+<td></td></tr>
+<tr><td><a href="Jekyll_format.E.html#VALyaml_no_start">yaml_no_start</a> [<a href="Jekyll_format.E.html">Jekyll_format.E</a>]</td>
+<td></td></tr>
+</table>
+</body>
+</html>
