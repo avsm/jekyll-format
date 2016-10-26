@@ -1,5 +1,5 @@
 true : annot, bin_annot, safe_string, package(bytes), short_paths
-true : package(astring omd rresult fmt ptime fpath)
+true : package(astring omd result rresult fmt ptime fpath)
 <test/*> : package(alcotest bos)
 <src> : include
 <test> : include

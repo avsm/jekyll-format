@@ -19,7 +19,7 @@ depends: [
   "rresult"
   "ptime"
   "fpath"
-  "alcotest" {test}
+  "alcotest" {test & >="0.7.0"}
   "bos" {test}
 ]
 depopts: []
