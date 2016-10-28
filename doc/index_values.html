@@ -44,7 +44,7 @@
 </td></tr>
 <tr><td><a href="Jekyll_format.html#VALdate_exn">date_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
 <td><div class="info">
-<code class="code">date_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALdate_exn"><code class="code"><span class="constructor">Jekyll_format</span>.date_exn</code></a> except that it raises a
+<code class="code">date_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALdate"><code class="code"><span class="constructor">Jekyll_format</span>.date</code></a> except that it raises a
     <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> in the error case.
 </div>
 </td></tr>
@@ -159,6 +159,26 @@
 <tr><td><a href="Jekyll_liquid.Tag_parser.html#VALpp_highlight">pp_highlight</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
 <td><div class="info">
 <code class="code">pp_highlight</code> formats a <a href="Jekyll_liquid.Tag_parser.html#VALhighlight"><code class="code"><span class="constructor">Jekyll_liquid</span>.<span class="constructor">Tag_parser</span>.highlight</code></a> in human-readable format.
+</div>
+</td></tr>
+<tr><td align="left"><br>S</td></tr>
+<tr><td><a href="Jekyll_format.html#VALslug">slug</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">slug ?fname f</code> will query the slug name from the YAML metadata, or calculate
+    it from the filename if no explicit slug field is set, and finally fallback to
+    parsing the <a href="Jekyll_format.html#VALtitle"><code class="code"><span class="constructor">Jekyll_format</span>.title</code></a> of the post if nothing else is found.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALslug_exn">slug_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">slug_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALslug"><code class="code"><span class="constructor">Jekyll_format</span>.slug</code></a> except that it raises a
+    <code class="code"><span class="constructor">Parse_Failure</span></code> in the error case.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_format.html#VALslug_of_string">slug_of_string</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
+<td><div class="info">
+<code class="code">slug_of_string s</code> replaces all non-ascii characters (<code class="code">a..zA..<span class="constructor">Z0</span>..9</code>) with
+    the <code class="code">-</code> hyphen character.
 </div>
 </td></tr>
 <tr><td align="left"><br>T</td></tr>

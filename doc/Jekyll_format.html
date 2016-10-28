@@ -90,8 +90,20 @@ Jekyll blog post parsing module<br>
 </div>
 
 <pre><span id="VALdate_exn"><span class="keyword">val</span> date_exn</span> : <code class="type">?fname:string -> <a href="Jekyll_format.html#TYPEfields">fields</a> -> Ptime.t</code></pre><div class="info ">
-<code class="code">date_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALdate_exn"><code class="code"><span class="constructor">Jekyll_format</span>.date_exn</code></a> except that it raises a
+<code class="code">date_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALdate"><code class="code"><span class="constructor">Jekyll_format</span>.date</code></a> except that it raises a
     <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> in the error case.<br>
+</div>
+
+<pre><span id="VALslug"><span class="keyword">val</span> slug</span> : <code class="type">?fname:string -><br>       <a href="Jekyll_format.html#TYPEfields">fields</a> -> (string, [> Rresult.R.msg ]) Result.result</code></pre><div class="info ">
+<code class="code">slug ?fname f</code> will query the slug name from the YAML metadata, or calculate
+    it from the filename if no explicit slug field is set, and finally fallback to
+    parsing the <a href="Jekyll_format.html#VALtitle"><code class="code"><span class="constructor">Jekyll_format</span>.title</code></a> of the post if nothing else is found.
+    The slug is calculated using <a href="Jekyll_format.html#VALslug_of_string"><code class="code"><span class="constructor">Jekyll_format</span>.slug_of_string</code></a>.<br>
+</div>
+
+<pre><span id="VALslug_exn"><span class="keyword">val</span> slug_exn</span> : <code class="type">?fname:string -> <a href="Jekyll_format.html#TYPEfields">fields</a> -> string</code></pre><div class="info ">
+<code class="code">slug_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALslug"><code class="code"><span class="constructor">Jekyll_format</span>.slug</code></a> except that it raises a
+    <code class="code"><span class="constructor">Parse_Failure</span></code> in the error case.<br>
 </div>
 <br>
 <h1 id="1_Conversionfunctions">Conversion functions</h1><br>
@@ -109,6 +121,11 @@ Jekyll blog post parsing module<br>
 <pre><span id="VALbody_to_string"><span class="keyword">val</span> body_to_string</span> : <code class="type"><a href="Jekyll_format.html#TYPEbody">body</a> -> string</code></pre><div class="info ">
 <code class="code">body_to_string body</code> serialises the body to an OCaml string, maintaining
     the original layout and whitespace.<br>
+</div>
+
+<pre><span id="VALslug_of_string"><span class="keyword">val</span> slug_of_string</span> : <code class="type">string -> string</code></pre><div class="info ">
+<code class="code">slug_of_string s</code> replaces all non-ascii characters (<code class="code">a..zA..<span class="constructor">Z0</span>..9</code>) with
+    the <code class="code">-</code> hyphen character. The result is also lowercase.<br>
 </div>
 
 <pre><span id="VALparse_filename"><span class="keyword">val</span> parse_filename</span> : <code class="type">string -> (Ptime.t * string * string, [> Rresult.R.msg ]) Result.result</code></pre><div class="info ">

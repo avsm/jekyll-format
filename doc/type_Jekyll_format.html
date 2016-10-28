@@ -27,10 +27,15 @@
 &nbsp;&nbsp;&nbsp;&nbsp;?fname:string&nbsp;<span class="keywordsign">-&gt;</span>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Jekyll_format</span>.fields&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Ptime</span>.t,&nbsp;[&gt;&nbsp;<span class="constructor">Rresult</span>.<span class="constructor">R</span>.msg&nbsp;])&nbsp;<span class="constructor">Result</span>.result
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;date_exn&nbsp;:&nbsp;?fname:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Jekyll_format</span>.fields&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ptime</span>.t
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;slug&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?fname:string&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Jekyll_format</span>.fields&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(string,&nbsp;[&gt;&nbsp;<span class="constructor">Rresult</span>.<span class="constructor">R</span>.msg&nbsp;])&nbsp;<span class="constructor">Result</span>.result
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;slug_exn&nbsp;:&nbsp;?fname:string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Jekyll_format</span>.fields&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_string&nbsp;:
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Jekyll_format</span>.t,&nbsp;[&gt;&nbsp;<span class="constructor">Rresult</span>.<span class="constructor">R</span>.msg&nbsp;])&nbsp;<span class="constructor">Result</span>.result
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_string_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Jekyll_format</span>.t
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;body_to_string&nbsp;:&nbsp;<span class="constructor">Jekyll_format</span>.body&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;slug_of_string&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parse_filename&nbsp;:
 &nbsp;&nbsp;&nbsp;&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(<span class="constructor">Ptime</span>.t&nbsp;*&nbsp;string&nbsp;*&nbsp;string,&nbsp;[&gt;&nbsp;<span class="constructor">Rresult</span>.<span class="constructor">R</span>.msg&nbsp;])&nbsp;<span class="constructor">Result</span>.result
 &nbsp;&nbsp;<span class="keyword">val</span>&nbsp;parse_filename_exn&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Ptime</span>.t&nbsp;*&nbsp;string&nbsp;*&nbsp;string
