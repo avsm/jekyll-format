@@ -12,6 +12,7 @@ type t = {
   fname: string option;
   title: string;
   date: Ptime.t;
+  slug: string;
   body: Jekyll_format.body;
   fields: Jekyll_format.fields;
 }
@@ -27,7 +28,8 @@ let of_string ?fname post =
   let fields = JF.fields jf in
   JF.title ?fname fields >>= fun title ->
   JF.date ?fname fields >>= fun date ->
-  Ok { fname; title; date; body; fields } 
+  JF.slug ?fname fields >>= fun slug ->
+  Ok { fname; title; date; body; slug; fields } 
 
 let of_string_exn ?fname post =
   of_string ?fname post |> result_to_exn

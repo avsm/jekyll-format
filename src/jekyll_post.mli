@@ -17,6 +17,7 @@ type t = {
   fname: string option;
   title: string;
   date: Ptime.t;
+  slug: string;
   body: Jekyll_format.body;
   fields: Jekyll_format.fields;
 }
