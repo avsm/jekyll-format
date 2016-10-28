@@ -157,8 +157,9 @@ let parse_filename s =
 let parse_filename_exn s =
   parse_filename s |> result_to_exn
 
-let slug_of_string =
-  String.map (function |'a'..'z'|'A'..'Z'|'0'..'9' as c -> c|_ -> '-')
+let slug_of_string s =
+  String.map (function |'a'..'z'|'A'..'Z'|'0'..'9' as c -> c|_ -> '-') s |>
+  String.Ascii.lowercase
 
 let title ?fname f =
   let open R.Infix in
@@ -180,13 +181,13 @@ let slug ?fname f =
   let open R.Infix in
   match (find "slug" f) with
   | Some s -> R.ok (slug_of_string s)
-  | None -> (* query title instead *)
-     match title ?fname f with
-     | Ok t -> R.ok (slug_of_string t)
-     | Error (`Msg _) -> (* try the filename instead *)
-         match fname with
-         | None -> R.error_msg "Unable to find a slug key or parse the filename for it"
-         | Some fname -> parse_filename fname >>| fun (_,title,_) -> slug_of_string title
+  | None -> (* query filename instead *)
+     match fname with
+     | Some fname -> parse_filename fname >>| fun (_,title,_) -> slug_of_string title
+     | None ->
+         match title ?fname f with
+         | Ok t -> R.ok (slug_of_string t)
+         | Error _ -> R.error_msg "Unable to find a slug key or parse the filename for it"
 
 let date_exn ?fname f = date ?fname f |> result_to_exn
 let title_exn ?fname f = title ?fname f |> result_to_exn

@@ -53,8 +53,8 @@ val date_exn : ?fname:string -> fields -> Ptime.t
 
 val slug : ?fname:string -> fields -> (string, [> Rresult.R.msg ]) Result.result
 (** [slug ?fname f] will query the slug name from the YAML metadata, or calculate
-    it from the title if no explicit slug field is set, and finally fallback to
-    parsing the optional [fname] filename of the post if nothing else is found.
+    it from the filename if no explicit slug field is set, and finally fallback to
+    parsing the {!title} of the post if nothing else is found.
     The slug is calculated using {!slug_of_string}. *)
 
 val slug_exn : ?fname:string -> fields -> string
@@ -77,7 +77,7 @@ val body_to_string : body -> string
 
 val slug_of_string : string -> string
 (** [slug_of_string s] replaces all non-ascii characters ([a..zA..Z0..9]) with
-    the [-] hyphen character *)
+    the [-] hyphen character. The result is also lowercase. *)
 
 val parse_filename : string -> (Ptime.t * string * string, [> Rresult.R.msg ]) Result.result
 (** [parse_filename f] parses a Jekyll format filename [YEAR-MONTH-DAY-title.MARKUP]
