@@ -59,7 +59,7 @@ val slug : ?fname:string -> fields -> (string, [> Rresult.R.msg ]) Result.result
 
 val slug_exn : ?fname:string -> fields -> string
 (** [slug_exn ?fname f] operates as {!slug} except that it raises a
-    {!Parse_Failure} in the error case. *)
+    {!Parse_failure} in the error case. *)
 
 (** {1 Conversion functions} *)
 
