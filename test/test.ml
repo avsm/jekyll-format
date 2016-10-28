@@ -78,12 +78,6 @@ let test_body ~base_dir () =
   JF.body |> fun b ->
   check string "body" "\nbody\ngoes\nhere\n" (JF.body_to_string b)
 
-let test_parsing ~base_dir () =
-  List.map (fun (subdir, post, expect) ->
-    let base_dir = Fpath.(base_dir / subdir) in
-    post, `Quick, (test_post ~expect ~base_dir ~post)
-  ) posts
-
 let test_tag_extraction () =
   let tags = [
     "{% highlight %}", (Some "highlight");
@@ -152,10 +146,23 @@ let test_datetime_parse () =
   ] |>
   List.iter (fun (f,e) -> check ptime_check ("datetime " ^ f) e (JF.parse_date_exn f))
 
+let test_slug () =
+  [ "foo and bar", "foo-and-bar";
+    "foo1 and_bar","foo1-and-bar";
+    "  foo and bar  ","--foo-and-bar--" ] |>
+  List.iter (fun (f,e) -> check string f e (JF.slug_of_string f))
+
+let test_parsing ~base_dir () =
+  List.map (fun (subdir, post, expect) ->
+    let base_dir = Fpath.(base_dir / subdir) in
+    post, `Quick, (test_post ~expect ~base_dir ~post)
+  ) posts
+
 let test_meta ~base_dir () =
   let base_dir = Fpath.v "test/_posts/basic" in
   ["find", `Quick, test_find ~base_dir;
-   "body", `Quick, test_body ~base_dir]
+   "body", `Quick, test_body ~base_dir;
+   "slug", `Quick, test_slug]
 
 let test_tag_parsing () =
   ["tag", `Quick, test_tag_extraction;

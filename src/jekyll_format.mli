@@ -48,8 +48,18 @@ val date : ?fname:string -> fields -> (Ptime.t, [> Rresult.R.msg ]) Result.resul
     key is found. *)
 
 val date_exn : ?fname:string -> fields -> Ptime.t
-(** [date_exn ?fname f] operates as {!date_exn} except that it raises a
+(** [date_exn ?fname f] operates as {!date} except that it raises a
     {!Parse_failure} in the error case. *)
+
+val slug : ?fname:string -> fields -> (string, [> Rresult.R.msg ]) Result.result
+(** [slug ?fname f] will query the slug name from the YAML metadata, or calculate
+    it from the title if no explicit slug field is set, and finally fallback to
+    parsing the optional [fname] filename of the post if nothing else is found.
+    The slug is calculated using {!slug_of_string}. *)
+
+val slug_exn : ?fname:string -> fields -> string
+(** [slug_exn ?fname f] operates as {!slug} except that it raises a
+    {!Parse_Failure} in the error case. *)
 
 (** {1 Conversion functions} *)
 
@@ -64,6 +74,10 @@ val of_string_exn : string -> t
 val body_to_string : body -> string
 (** [body_to_string body] serialises the body to an OCaml string, maintaining
     the original layout and whitespace. *)
+
+val slug_of_string : string -> string
+(** [slug_of_string s] replaces all non-ascii characters ([a..zA..Z0..9]) with
+    the [-] hyphen character *)
 
 val parse_filename : string -> (Ptime.t * string * string, [> Rresult.R.msg ]) Result.result
 (** [parse_filename f] parses a Jekyll format filename [YEAR-MONTH-DAY-title.MARKUP]
