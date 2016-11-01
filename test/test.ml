@@ -77,43 +77,60 @@ let test_body ~base_dir () =
   parse_post_exn ~base_dir ~post:"simple.md" () |>
   JF.body |> fun b ->
   check string "body" "\nbody\ngoes\nhere\n" (JF.body_to_string b)
-
 let test_tag_extraction () =
   let tags = [
-    "{% highlight %}", (Some "highlight");
-    "{% highlight foo %}", (Some "highlight foo");
+    "{% highlight %}", (Some (0,"highlight",15));
+    "{%  highlight %}", (Some (0,"highlight",16));
+    "  {% highlight %}", (Some (2,"highlight",17));
+    "{% highlight foo %}", (Some (0,"highlight foo",19));
+    "  {% bar %}  ", (Some (2, "bar", 11));
+    "  {% bar %} %}", (Some (2,"bar", 11));
+    "{% f  %}", (Some (0,"f",8));
     "%} {%", None;
     "{%%}", None;
     "{% %}", None;
-    "{% f %}", (Some "f");
   ] in
+  let testfn =
+    Alcotest.testable
+    (fun ppf -> function
+       |None -> Fmt.pf ppf "%s" "None"
+       |Some (a,b,c) -> Fmt.pf ppf "Some@.(%d,%S,%d)" a b c)
+    (=)
+  in
   List.iter (fun (a,b) ->
-    check (option string) "tag extract" b
-    (JL.Tag_parser.extract_tag ~start:"{%" ~stop:"%}" (String.Sub.v a)
-     |> function None -> None | Some x -> Some (String.Sub.to_string x))
+    check testfn a b
+    (JL.Tag_parser.extract_tag ~start_tag:"{%" ~stop_tag:"%}" a)
   ) tags
 
 let test_tag_highlight () =
   let module T = JL.Tag_parser in
+  let fn a = T.extract_liquid_tag a |>
+    function None -> None | Some (_,a,_) -> T.highlight a in
   let tags = [
     "{% highlight %}", (Some {T.body=[]; lang=None; linenos=false});
     "{% highlight ocaml %}", Some {T.body=[]; lang=(Some "ocaml"); linenos=false};
     "{% highlight ocaml linenos %}", Some {T.body=[]; lang=(Some "ocaml"); linenos=true};
   ] in
   List.iter (fun (a,b) ->
-    check (option highlight_testable) a b (T.highlight (String.Sub.v a))
+    check (option highlight_testable) a b (fn a)
   ) tags
 
 let test_tag_endhighlight () =
   let module T = JL.Tag_parser in
-  check bool "endhighlight ok" true (T.endhighlight (String.Sub.v "{% endhighlight %}"));
-  check bool "endhighlight fail" false (T.endhighlight (String.Sub.v "{% xendhighlight %}"))
+  let fn a = T.extract_liquid_tag a |>
+    function None -> false | Some (_,a,_) -> T.endhighlight a in
+  check bool "endhighlight ok" true (fn "{% endhighlight %}");
+  check bool "endhighlight fail" false (fn "{% xendhighlight %}")
 
 let test_delimit_highlight () =
   let module T = JL.Tag_parser in
-  let s = String.Sub.(cuts ~sep:(v "\n") (v "{% highlight ocaml %}\nfoo\nbar\n{% endhighlight %}")) in
-  let h = JL.highlight_exn s |> JF.body_to_string in
-  check string "delimit highlight" "```\nfoo\nbar\n```" h
+  let fn = JL.highlight_markdown_code in
+  "{% highlight ocaml %}\nfoo\nbar\n{% endhighlight %}" |>
+  JL.highlight_exn fn |>
+  check string "delimit highlight" "```\nfoo\nbar\n```";
+  "  {% highlight %}\nfoo\nbar\n{% endhighlight %}\nhello\n{% highlight %}\nbar\n{% endhighlight %}\nafter\nword" |>
+  JL.highlight_exn fn |>
+  check string "delimit highlight multiple" "  ```\nfoo\nbar\n```\nhello\n```\nbar\n```\nafter\nword"
 
 let option_exn = function | None -> raise Test_error | Some e -> e
 

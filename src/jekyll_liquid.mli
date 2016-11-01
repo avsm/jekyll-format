@@ -15,18 +15,33 @@
 
 open Astring
 
-val highlight_exn : Jekyll_format.body -> Jekyll_format.body
+val highlight_exn : ?start:int -> (string -> string) -> string -> string
 (** [highlight body] parses the body for Jekyll `{% highlight %} tags and
     transforms them into vanilla Markdown. *)
 
+val highlight_markdown_code : string -> string
+(** [highlight_markdown_code s] will wrap the code in [s] in a Markdown
+    code segment. This can be parsed to {!highlight_exn} as a sensible
+    default. *)
+
 (** Functions for parsing individual Liquid template tags *)
 module Tag_parser : sig
-  val extract_tag :
-    start:string -> stop:string -> String.sub -> String.sub option
-  (** [extract_tag ~start ~stop s] will extract a substring that
+ val extract_tag :
+   ?start:int ->
+   start_tag:string ->
+   stop_tag:string -> string -> (int * string * int) option
+  (** [extract_tag ?start ~start_tag ~stop_tag s] will extract the indices that
     represents the [text] in ["<start><ws><text><ws><stop>"]. Whitespace
     is trimmed, and [None] is returned if non-empty text could not
-    be parsed. *)
+    be parsed. 
+
+    @return starting index of the tag within the string, the tag contents
+     with whitespace trimmed, and the index of the first character after 
+     the end tag (which may be out of bounds of the string) *)
+
+  val extract_liquid_tag : ?start:int -> string -> (int * string * int) option
+  (** [extract_liquid_tag] behaves as {!extract_tag} but is specialised
+    to parse Jekyll liquid tags of the form [{% ... %}]. *)
 
   type lines = String.Sub.t list
   (** [lines] represents a list of lines that are substrings from
@@ -42,11 +57,15 @@ module Tag_parser : sig
   val pp_highlight: highlight Fmt.t
   (** [pp_highlight] formats a {!highlight} in human-readable format. *)
 
-  val highlight : String.sub -> highlight option
-  (** [highlight s] attempts to parse a [{% highlight %}] tag. *)
+  val highlight : string-> highlight option
+  (** [highlight s] attempts to parse the contents of a [{% highlight %}] tag.
+    [s] should have had the tags removed via {!extract_tag} and just contain
+    the tag body. *)
 
-  val endhighlight : String.sub -> bool
-  (** [endhighlight s] checks if a [{% endhighlight %}] tag is present. *)
+  val endhighlight : string -> bool
+  (** [endhighlight s] checks if a [{% endhighlight %}] tag is present.
+   [s] should have had the tags removed via {!extract_tag} and just contain
+   the tag body. *)
 end
 
 (*---------------------------------------------------------------------------
