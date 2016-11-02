@@ -19,8 +19,7 @@ let astring_sub =
   let module M = struct
     type t = sub
     let pp = Sub.pp
-    let equal a b = equal (Sub.to_string a) (Sub.to_string b)
-    (* This ensures that tests work on substrings from different bases *)
+    let equal = Sub.equal_bytes
   end in
   (module M: TESTABLE with type t = M.t)
 
