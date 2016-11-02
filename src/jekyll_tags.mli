@@ -41,7 +41,7 @@ val map_tags : start_tag:string -> stop_tag:string ->
   f:(string -> string option) -> String.sub -> String.sub
 (** [map_tags ~start_tag ~stop_tag ~f body] will apply the function [f]
     to all the tags found that match [start_tag] and [stop_tag]. The scanning
-    is done via {!extract_tags} covers all occurrences in [body].
+    is done via {!extract_tags} and covers all occurrences in [body].
     [f] should return [None] if the tag is to be skipped, and [Some sub] where
     [sub] is the string to substitute into the tag body. *)
 
