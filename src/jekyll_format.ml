@@ -14,7 +14,7 @@ module E = struct
 end
 
 type fields = (String.Sub.t * String.Sub.t) list
-type body = String.Sub.t list
+type body = String.Sub.t
 type t = fields * body
 
 let of_string t =
@@ -32,7 +32,7 @@ let of_string t =
   match lines with
   | [] -> R.error_msg E.yaml_no_start
   | hd::_ when not (is_yaml_delimiter hd) -> R.error_msg E.yaml_no_start
-  | hd::tl -> get_yaml [] tl
+  | hd::tl -> get_yaml [] tl >>= fun (fields,lines) -> R.ok (fields, String.Sub.(concat ~sep:(v "\n") lines))
 
 exception Parse_failure of string
 
@@ -44,7 +44,7 @@ let of_string_exn t = of_string t |> result_to_exn
 
 let fields = fst
 let body = snd
-let body_to_string b = String.Sub.(concat ~sep:(v "\n") b |> to_string)
+let body_to_string b = String.Sub.to_string b
 
 let find key (f:fields) =
   try
@@ -55,10 +55,7 @@ let find key (f:fields) =
 let keys f =
   List.map (fun (k,v) -> String.Sub.to_string k) f
 
-let pp_body ppf body =
-  let open Fmt in
-  let pp_list = list ~sep:Format.pp_force_newline String.Sub.pp in
-  pf ppf "%a" pp_list body
+let pp_body ppf b = Fmt.(pf ppf "%a" String.Sub.pp b) 
 
 let pp_fields ppf fields =
   let open Fmt in

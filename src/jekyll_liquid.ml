@@ -11,16 +11,19 @@ module Tag_parser = struct
   type lines = String.Sub.t list
   type highlight = {
     lang: string option;
-    body: lines;
+    body: String.Sub.t;
     linenos: bool;
   }
+
+  let mk_highlight ?lang ?(body=String.Sub.empty) ?(linenos=false) () =
+    { lang; body; linenos }
 
   let pp_highlight ppf {lang; body; linenos} =
     let open Fmt in
     pf ppf "lang: %a linenos: %a@,body:@,%a"
-      (option string) lang (list ~sep:(unit "\n") String.Sub.pp) body bool linenos
+      (option string) lang String.Sub.pp body bool linenos
 
-  let mk_highlight ?lang ?(body=[]) ?(linenos=false) () =
+  let mk_highlight ?lang ?(body=String.Sub.empty) ?(linenos=false) () =
     { lang; body; linenos }
 
   let extract_tag ?(start=0) ~start_tag ~stop_tag s =
@@ -66,10 +69,10 @@ module Tag_parser = struct
 
 end
 
-let highlight_exn ?(start=0) fn body =
-  Tag_parser.extract_liquid_tags body |> fun tags ->
-  String.Sub.v ~start body |> fun body ->
-  let rec parse_tag_pairs acc body curpos = function
+let highlight_exn fn body =
+  Tag_parser.extract_liquid_tags (String.Sub.to_string body) |> fun tags ->
+  let rec parse_tag_pairs acc body curpos =
+    function
     | (start1,tag1,end1)::(start2,tag2,end2)::tl -> begin
         match Tag_parser.highlight tag1 with
         |Some h -> begin
@@ -99,8 +102,7 @@ let highlight_exn ?(start=0) fn body =
   in
   parse_tag_pairs [] body 0 tags |> fun acc ->
   List.iter (fun x -> Printf.printf "%d\n%!" (String.Sub.length x)) acc;
-  String.Sub.concat (List.rev acc) |>
-  String.Sub.to_string
+  String.Sub.concat (List.rev acc)
 
 let highlight_markdown_code s =
   "```\n"^s^"\n```"

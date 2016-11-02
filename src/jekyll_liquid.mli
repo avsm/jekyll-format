@@ -15,7 +15,7 @@
 
 open Astring
 
-val highlight_exn : ?start:int -> (string -> string) -> string -> string
+val highlight_exn : (string -> string) -> String.Sub.t -> String.Sub.t
 (** [highlight body] parses the body for Jekyll `{% highlight %} tags and
     transforms them into vanilla Markdown. *)
 
@@ -43,16 +43,18 @@ module Tag_parser : sig
   (** [extract_liquid_tag] behaves as {!extract_tag} but is specialised
     to parse Jekyll liquid tags of the form [{% ... %}]. *)
 
-  type lines = String.Sub.t list
-  (** [lines] represents a list of lines that are substrings from
-    a larger string. *)
-
   type highlight = {
     lang: string option; (** optional language of syntax *)
-    body: lines;  (** code to be highlighted *)
+    body: String.Sub.t;  (** code to be highlighted *)
     linenos: bool;  (** whether line numbers should be emitted *)
   }
   (** [highlight] represents the various syntax highlighting options. *)
+
+  val mk_highlight : ?lang:string -> ?body:String.Sub.t -> ?linenos:bool ->
+    unit -> highlight
+  (** [mk_highlight] constructs a {!highlight} value. [lang] defaults to
+    [None], [body] defaults to {!Astring.String.Sub.empty} and [linenos]
+    defaults to [false]. *)
 
   val pp_highlight: highlight Fmt.t
   (** [pp_highlight] formats a {!highlight} in human-readable format. *)

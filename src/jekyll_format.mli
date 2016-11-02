@@ -14,7 +14,7 @@ type t
 type fields
 (** [fields] represents the YAML front matter in the blog post *)
 
-type body = Astring.String.Sub.t list
+type body = Astring.String.Sub.t
 (** [body] represents the blog post content, probably in Markdown format *)
 
 val fields : t -> fields

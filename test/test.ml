@@ -15,10 +15,12 @@ let rresult_msg =
   (module M: TESTABLE with type t = M.t)
 
 let astring_sub =
+  let open Astring.String in
   let module M = struct
-    type t = Astring.String.sub
-    let pp = Astring.String.Sub.pp
-    let equal = Astring.String.Sub.equal
+    type t = sub
+    let pp = Sub.pp
+    let equal a b = equal (Sub.to_string a) (Sub.to_string b)
+    (* This ensures that tests work on substrings from different bases *)
   end in
   (module M: TESTABLE with type t = M.t)
 
@@ -107,9 +109,9 @@ let test_tag_highlight () =
   let fn a = T.extract_liquid_tag a |>
     function None -> None | Some (_,a,_) -> T.highlight a in
   let tags = [
-    "{% highlight %}", (Some {T.body=[]; lang=None; linenos=false});
-    "{% highlight ocaml %}", Some {T.body=[]; lang=(Some "ocaml"); linenos=false};
-    "{% highlight ocaml linenos %}", Some {T.body=[]; lang=(Some "ocaml"); linenos=true};
+    "{% highlight %}", (Some (T.mk_highlight ()));
+    "{% highlight ocaml %}", Some (T.mk_highlight ~lang:"ocaml" ());
+    "{% highlight ocaml linenos %}", Some (T.mk_highlight ~lang:"ocaml" ~linenos:true ());
   ] in
   List.iter (fun (a,b) ->
     check (option highlight_testable) a b (fn a)
@@ -124,13 +126,14 @@ let test_tag_endhighlight () =
 
 let test_delimit_highlight () =
   let module T = JL.Tag_parser in
+  let module S = String.Sub in
   let fn = JL.highlight_markdown_code in
-  "{% highlight ocaml %}\nfoo\nbar\n{% endhighlight %}" |>
+  S.v "{% highlight ocaml %}\nfoo\nbar\n{% endhighlight %}" |>
   JL.highlight_exn fn |>
-  check string "delimit highlight" "```\nfoo\nbar\n```";
-  "  {% highlight %}\nfoo\nbar\n{% endhighlight %}\nhello\n{% highlight %}\nbar\n{% endhighlight %}\nafter\nword" |>
+  check astring_sub "delimit highlight" (S.v "```\nfoo\nbar\n```");
+  S.v "  {% highlight %}\nfoo\nbar\n{% endhighlight %}\nhello\n{% highlight %}\nbar\n{% endhighlight %}\nafter\nword" |>
   JL.highlight_exn fn |>
-  check string "delimit highlight multiple" "  ```\nfoo\nbar\n```\nhello\n```\nbar\n```\nafter\nword"
+  check astring_sub "delimit highlight multiple" (S.v "  ```\nfoo\nbar\n```\nhello\n```\nbar\n```\nafter\nword")
 
 let option_exn = function | None -> raise Test_error | Some e -> e
 
