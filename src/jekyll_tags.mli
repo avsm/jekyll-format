@@ -57,7 +57,7 @@ val map_tag_bodies : start_tag:string -> stop_tag:string ->
     start tag body to the [f_map] function so that tag arguments can be
     handled by the processor. *)
 
-(** {1 Jekyll liquid tags [{% %}] parsing functions *)
+(** {1 Jekyll liquid tag parsing functions} *)
 
 val extract_liquid_tag : ?start:int -> string -> (int * string * int) option
 (** [extract_liquid_tag] behaves as {!extract_tag} but is specialised
@@ -65,7 +65,7 @@ val extract_liquid_tag : ?start:int -> string -> (int * string * int) option
 
 val extract_liquid_tags : ?start:int -> string -> (int * string * int) list 
 (** [extract_liquid_tags] behaves as {!extract_tags} but is specialised
-    top parse Jekyll liquid tags of the form [{% ... %}]. *)
+    to parse Jekyll liquid tags of the form [{% ... %}]. *)
 
 val map_liquid_tags : f:(string -> string option) -> String.sub -> String.sub
 (** [map_liquid_tags ~f body] behaves as {!map_tags} but is specialised
@@ -73,7 +73,7 @@ val map_liquid_tags : f:(string -> string option) -> String.sub -> String.sub
 
 val map_liquid_tag_bodies : f_start:(string -> 'a option) -> f_stop:(string -> bool) ->
   f_map:('a option -> String.sub -> String.sub) -> String.sub -> String.sub
-(** [map_liquid_tag_bodies] operates as {!map_tag_bodies but is specialised
+(** [map_liquid_tag_bodies] operates as {!map_tag_bodies} but is specialised
     to parse Jekyll liquid tags of the form [{% ... %}]. *)
 
 (*---------------------------------------------------------------------------
