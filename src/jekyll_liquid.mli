@@ -15,15 +15,6 @@
 
 open Astring
 
-val highlight_exn : (string -> string) -> String.Sub.t -> String.Sub.t
-(** [highlight body] parses the body for Jekyll `{% highlight %} tags and
-    transforms them into vanilla Markdown. *)
-
-val highlight_markdown_code : string -> string
-(** [highlight_markdown_code s] will wrap the code in [s] in a Markdown
-    code segment. This can be parsed to {!highlight_exn} as a sensible
-    default. *)
-
 (** Functions for parsing individual Liquid template tags *)
 module Tag_parser : sig
  val extract_tag :
@@ -39,8 +30,38 @@ module Tag_parser : sig
      with whitespace trimmed, and the index of the first character after 
      the end tag (which may be out of bounds of the string) *)
 
+  val extract_tags : ?start:int -> start_tag:string -> stop_tag:string ->
+     string -> (int * string * int) list
+  (** [extract_tags ?start ~start_tag ~stop_tag s] will extract the list of
+    indices that represent the [text] in ["<start_Tag><ws><text><ws><stop_tag>"].
+    Whitespace is trimmed from the [text] body.
+
+    @return list of tuples of the starting index of the tag within the string,
+     the tag contents with whitespace trimmed, and the index of the first character after 
+     the end tag (which may be out of bounds of the string) *)
+
   val extract_liquid_tag : ?start:int -> string -> (int * string * int) option
   (** [extract_liquid_tag] behaves as {!extract_tag} but is specialised
+    to parse Jekyll liquid tags of the form [{% ... %}]. *)
+
+  val extract_liquid_tags : ?start:int -> string -> (int * string * int) list 
+  (** [extract_liquid_tags] behaves as {!extract_tags} but is specialised
+    top parse Jekyll liquid tags of the form [{% ... %}]. *)
+ 
+  val map_tag : sub:String.sub -> (int * string * int) -> String.sub -> String.sub
+  (** [map_tag ~sub tag_info body] will substitute the tag_info (typically
+    returned by {!extract_tag} with the value of [sub] *)
+
+  val map_tags : start_tag:string -> stop_tag:string ->
+    f:(string -> string option) -> String.sub -> String.sub
+  (** [map_tags ~start_tag ~stop_tag ~f body] will apply the function [f]
+    to all the tags found that match [start_tag] and [stop_tag]. The scanning
+    is done via {!extract_tags} covers all occurrences in [body].
+    [f] should return [None] if the tag is to be skipped, and [Some sub] where
+    [sub] is the string to substitute into the tag body. *)
+
+  val map_liquid_tags : f:(string -> string option) -> String.sub -> String.sub
+  (** [map_liquid_tags ~f body] behaves as {!map_tags} but is specialised
     to parse Jekyll liquid tags of the form [{% ... %}]. *)
 
   type highlight = {
@@ -69,6 +90,17 @@ module Tag_parser : sig
    [s] should have had the tags removed via {!extract_tag} and just contain
    the tag body. *)
 end
+
+val highlight_exn :
+  ?f:(Tag_parser.highlight option -> String.sub -> String.sub) -> String.sub -> String.sub
+(** [highlight body] parses the body for Jekyll `{% highlight %} tags and
+    transforms them into vanilla Markdown. *)
+
+val highlight_markdown_code : Tag_parser.highlight option -> String.sub -> String.sub
+(** [highlight_markdown_code s] will wrap the code in [s] in a Markdown
+    code segment. This can be parsed to {!highlight_exn} as a sensible
+    default. *)
+
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy

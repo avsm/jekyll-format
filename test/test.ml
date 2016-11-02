@@ -116,6 +116,42 @@ let test_tag_highlight () =
     check (option highlight_testable) a b (fn a)
   ) tags
 
+let test_tag_map () =
+  let module T = JL.Tag_parser in
+  let module S = String.Sub in
+  let tags = [
+    "{% foo %}", "bar";
+    "  {% foo %}  ", "  bar  ";
+    "  {% foo %}  %{ foo %}  ","  bar  %{ foo %}  "
+  ] in
+  List.iter (fun (a,b) ->
+   check string a b (
+     T.extract_liquid_tag a |> function
+      | None -> raise Alcotest.Test_error
+      | Some tag -> T.map_tag ~sub:(S.v "bar") tag (S.v a) |> S.to_string) 
+  ) tags
+
+let test_tags_map () =
+  let module T = JL.Tag_parser in
+  let module S = String.Sub in
+  let tags = [
+    "{% foo %}", "foo1";
+    "XX{% foo %}xx", "XXfoo1xx";
+    "xx{% foo %}  {% foo %} {% alice %}...","xxfoo1  foo2 {% alice %}...";
+    "xx{% foo %}  {% foo %} {% alice %}","xxfoo1  foo2 {% alice %}";
+    "{% foo %}{% foo %}{% alice %}{% foo %}","foo1foo2{% alice %}foo3";
+    "...{% foo %}...{% foo %}...{% alice %}...{% foo %}...","...foo1...foo2...{% alice %}...foo3...";
+  ] in
+  List.iter (fun (a,b) ->
+    check string a b (
+      let x = ref 0 in
+      T.map_tags ~start_tag:"{%" ~stop_tag:"%}"
+        ~f:(function
+          |tag when tag = "foo" -> incr x; Some (Fmt.strf "%s%d" tag !x)
+          |tag -> None) (S.v a) |> S.to_string
+    )
+  ) tags
+
 let test_tag_endhighlight () =
   let module T = JL.Tag_parser in
   let fn a = T.extract_liquid_tag a |>
@@ -126,12 +162,11 @@ let test_tag_endhighlight () =
 let test_delimit_highlight () =
   let module T = JL.Tag_parser in
   let module S = String.Sub in
-  let fn = JL.highlight_markdown_code in
   S.v "{% highlight ocaml %}\nfoo\nbar\n{% endhighlight %}" |>
-  JL.highlight_exn fn |>
+  JL.highlight_exn |>
   check astring_sub "delimit highlight" (S.v "```\nfoo\nbar\n```");
   S.v "  {% highlight %}\nfoo\nbar\n{% endhighlight %}\nhello\n{% highlight %}\nbar\n{% endhighlight %}\nafter\nword" |>
-  JL.highlight_exn fn |>
+  JL.highlight_exn |>
   check astring_sub "delimit highlight multiple" (S.v "  ```\nfoo\nbar\n```\nhello\n```\nbar\n```\nafter\nword")
 
 let option_exn = function | None -> raise Test_error | Some e -> e
@@ -187,7 +222,9 @@ let test_tag_parsing () =
   ["tag", `Quick, test_tag_extraction;
    "tag highlight", `Quick, test_tag_highlight;
    "tag endhighlight", `Quick, test_tag_endhighlight;
-   "tag delimit highlight", `Quick, test_delimit_highlight
+   "tag delimit highlight", `Quick, test_delimit_highlight;
+   "tag replace", `Quick, test_tag_map;
+   "tags replace", `Quick, test_tags_map;
   ]
 
 let test_date_parsing () =
