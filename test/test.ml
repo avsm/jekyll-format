@@ -25,8 +25,8 @@ let astring_sub =
 
 let highlight_testable =
    let module M = struct
-    type t = Jekyll_liquid.Tag_parser.highlight
-    let pp = Jekyll_liquid.Tag_parser.pp_highlight
+    type t = Jekyll_liquid.Tags.highlight
+    let pp = Jekyll_liquid.Tags.pp_highlight
     let equal = (=)
   end in
   (module M: TESTABLE with type t = M.t)
@@ -36,6 +36,7 @@ open Astring
 
 module JF = Jekyll_format
 module JL = Jekyll_liquid
+module JT = Jekyll_tags
 
 let posts = [
   "basic", "simple.md", (Ok ());
@@ -100,12 +101,12 @@ let test_tag_extraction () =
   in
   List.iter (fun (a,b) ->
     check testfn a b
-    (JL.Tag_parser.extract_tag ~start_tag:"{%" ~stop_tag:"%}" a)
+    (JT.extract_tag ~start_tag:"{%" ~stop_tag:"%}" a)
   ) tags
 
 let test_tag_highlight () =
-  let module T = JL.Tag_parser in
-  let fn a = T.extract_liquid_tag a |>
+  let module T = JL.Tags in
+  let fn a = JT.extract_liquid_tag a |>
     function None -> None | Some (_,a,_) -> T.highlight a in
   let tags = [
     "{% highlight %}", (Some (T.mk_highlight ()));
@@ -117,7 +118,6 @@ let test_tag_highlight () =
   ) tags
 
 let test_tag_map () =
-  let module T = JL.Tag_parser in
   let module S = String.Sub in
   let tags = [
     "{% foo %}", "bar";
@@ -126,13 +126,12 @@ let test_tag_map () =
   ] in
   List.iter (fun (a,b) ->
    check string a b (
-     T.extract_liquid_tag a |> function
+     JT.extract_liquid_tag a |> function
       | None -> raise Alcotest.Test_error
-      | Some tag -> T.map_tag ~sub:(S.v "bar") tag (S.v a) |> S.to_string) 
+      | Some tag -> JT.map_tag ~sub:(S.v "bar") tag (S.v a) |> S.to_string) 
   ) tags
 
 let test_tags_map () =
-  let module T = JL.Tag_parser in
   let module S = String.Sub in
   let tags = [
     "{% foo %}", "foo1";
@@ -145,7 +144,7 @@ let test_tags_map () =
   List.iter (fun (a,b) ->
     check string a b (
       let x = ref 0 in
-      T.map_tags ~start_tag:"{%" ~stop_tag:"%}"
+      JT.map_tags ~start_tag:"{%" ~stop_tag:"%}"
         ~f:(function
           |tag when tag = "foo" -> incr x; Some (Fmt.strf "%s%d" tag !x)
           |tag -> None) (S.v a) |> S.to_string
@@ -153,14 +152,12 @@ let test_tags_map () =
   ) tags
 
 let test_tag_endhighlight () =
-  let module T = JL.Tag_parser in
-  let fn a = T.extract_liquid_tag a |>
-    function None -> false | Some (_,a,_) -> T.endhighlight a in
+  let fn a = JT.extract_liquid_tag a |>
+    function None -> false | Some (_,a,_) -> JL.Tags.endhighlight a in
   check bool "endhighlight ok" true (fn "{% endhighlight %}");
   check bool "endhighlight fail" false (fn "{% xendhighlight %}")
 
 let test_delimit_highlight () =
-  let module T = JL.Tag_parser in
   let module S = String.Sub in
   S.v "{% highlight ocaml %}\nfoo\nbar\n{% endhighlight %}" |>
   JL.highlight_exn |>

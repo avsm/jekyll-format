@@ -7,8 +7,7 @@
 open Astring
 module JF = Jekyll_format
 
-module Tag_parser = struct
-  type lines = String.Sub.t list
+module Tags = struct
   type highlight = {
     lang: string option;
     body: String.Sub.t;
@@ -26,37 +25,6 @@ module Tag_parser = struct
   let mk_highlight ?lang ?(body=String.Sub.empty) ?(linenos=false) () =
     { lang; body; linenos }
 
-  let extract_tag ?(start=0) ~start_tag ~stop_tag s =
-    match String.find_sub ~start ~sub:start_tag s with
-    |None -> None
-    |Some start_idx ->
-      let start_data_idx = String.length start_tag + start_idx in
-      match String.find_sub ~start:start_data_idx ~sub:stop_tag s with
-      |None -> None
-      |Some end_data_idx -> begin
-         let end_idx = String.length stop_tag + end_data_idx in
-         String.with_index_range ~first:start_data_idx ~last:(end_data_idx-1) s |> fun tag ->
-         String.trim tag |> function
-         | "" -> None
-         | tag_data -> Some (start_idx, tag_data, end_idx)
-    end
-
-  let extract_tags ?(start=0) ~start_tag ~stop_tag s =
-    let rec find_one acc start =
-      if start >= String.length s then List.rev acc else
-      match extract_tag ~start ~start_tag ~stop_tag s with
-      |None -> List.rev acc
-      |Some (start_idx,tag_data,end_idx) ->
-        let acc = (start_idx, tag_data, end_idx) :: acc in
-        find_one acc end_idx
-    in find_one [] start
-
-  let extract_liquid_tag ?(start=0) s =
-    extract_tag ~start ~start_tag:"{%" ~stop_tag:"%}" s
-
-  let extract_liquid_tags ?(start=0) s =
-    extract_tags ~start ~start_tag:"{%" ~stop_tag:"%}" s
-
   let highlight tag_data =
     String.cuts ~empty:false ~sep:" " tag_data |> function
     | ["highlight"] -> Some (mk_highlight ())
@@ -66,63 +34,6 @@ module Tag_parser = struct
 
   let endhighlight tag_data =
     tag_data = "endhighlight"
-
-  let map_tag ~sub (start_idx,_,end_idx) body =
-    String.Sub.with_index_range ~last:(start_idx-1) body |> fun hd ->
-    String.Sub.with_index_range ~first:end_idx body |> fun tl ->
-    String.Sub.concat [hd;sub;tl]
-
-  let map_tags ~start_tag ~stop_tag ~f body =
-    extract_tags ~start_tag ~stop_tag (String.Sub.to_string body) |>
-    List.fold_left (fun (acc,curpos) (start_idx,tag,end_idx) ->
-      match f tag with
-      |None -> 
-        String.Sub.with_index_range ~first:curpos ~last:(end_idx-1) body |> fun hd ->
-        (hd::acc, end_idx)
-      |Some sub ->
-        String.Sub.v sub |> fun sub ->
-        String.Sub.with_index_range ~first:curpos ~last:(start_idx-1) body |> fun hd ->
-        let acc = sub :: hd :: acc in
-        (acc, end_idx)
-    ) ([],0) |> fun (acc,lastpos) ->
-    let chunks = (String.Sub.with_index_range ~first:lastpos body) :: acc in
-    String.Sub.concat (List.rev chunks)
-
-  let map_tag_bodies ~start_tag ~stop_tag ~f_start ~f_end ~f_map body =
-    extract_tags ~start_tag ~stop_tag (String.Sub.to_string body) |>
-    List.fold_left (fun (acc, found_start, body_start_idx, args, curpos) (start_idx,tag,end_idx) ->
-      match found_start with
-      |false -> begin
-         match f_start tag with
-         |None ->
-           String.Sub.with_index_range ~first:curpos ~last:(end_idx-1) body |> fun hd ->
-           (hd::acc, false, 0, args, end_idx)
-         |args ->
-           String.Sub.with_index_range ~first:curpos ~last:(start_idx-1) body |> fun hd ->
-           let acc = hd :: acc in
-           (acc, true, end_idx, args, end_idx)
-      end
-      |true -> begin
-        match f_end tag with
-        |false ->
-          String.Sub.with_index_range ~first:curpos ~last:(end_idx-1) body |> fun hd ->
-          (hd::acc, true, body_start_idx, args, end_idx)
-        |true ->
-          String.Sub.with_index_range ~first:body_start_idx ~last:(start_idx-1) body |> fun tag_body ->
-          f_map args tag_body |> fun tag_body ->
-          let acc = tag_body :: acc in
-          (acc, false, 0, None, end_idx)
-      end
-    ) ([],false,0,None,0) |> fun (acc,found_start,_,_,curpos) ->
-    if found_start then raise (Failure "dangling start tag and no end tag found");
-    let chunks = String.Sub.with_index_range ~first:curpos body :: acc in
-    String.Sub.concat (List.rev chunks)
-
-  let map_liquid_tags ~f body =
-    map_tags ~start_tag:"{%" ~stop_tag:"%}" ~f body
-
-  let map_liquid_tag_bodies ~f_start ~f_end ~f_map body =
-    map_tag_bodies ~start_tag:"{%" ~stop_tag:"%}" ~f_start ~f_end ~f_map body
 end
 
 let highlight_markdown_code h s =
@@ -130,7 +41,8 @@ let highlight_markdown_code h s =
   String.Sub.concat [delim;s;delim]
 
 let highlight_exn ?(f=highlight_markdown_code) body =
-  Tag_parser.map_liquid_tag_bodies ~f_start:Tag_parser.highlight ~f_end:Tag_parser.endhighlight ~f_map:f body
+  Jekyll_tags.map_liquid_tag_bodies
+    ~f_start:Tags.highlight ~f_stop:Tags.endhighlight ~f_map:f body
   
  
 (*---------------------------------------------------------------------------
