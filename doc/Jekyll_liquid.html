@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="style.css" type="text/css">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
 <link rel="Start" href="index.html">
-<link rel="previous" href="Jekyll_format.html">
+<link rel="previous" href="Jekyll_tags.html">
 <link rel="Up" href="index.html">
 <link title="Index of types" rel=Appendix href="index_types.html">
 <link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
@@ -12,11 +12,11 @@
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Jekyll_post" rel="Chapter" href="Jekyll_post.html">
 <link title="Jekyll_format" rel="Chapter" href="Jekyll_format.html">
-<link title="Jekyll_liquid" rel="Chapter" href="Jekyll_liquid.html"><link title="Liquid tag parsing" rel="Section" href="#1_Liquidtagparsing">
-<title>Jekyll_liquid</title>
+<link title="Jekyll_tags" rel="Chapter" href="Jekyll_tags.html">
+<link title="Jekyll_liquid" rel="Chapter" href="Jekyll_liquid.html"><title>Jekyll_liquid</title>
 </head>
 <body>
-<div class="navbar"><a class="pre" href="Jekyll_format.html" title="Jekyll_format">Previous</a>
+<div class="navbar"><a class="pre" href="Jekyll_tags.html" title="Jekyll_tags">Previous</a>
 &nbsp;<a class="up" href="index.html" title="Index">Up</a>
 &nbsp;</div>
 <h1>Module <a href="type_Jekyll_liquid.html">Jekyll_liquid</a></h1>
@@ -31,15 +31,18 @@ Jekyll Liquid templates parsing module
     as code highlighting.<br>
 </div>
 <hr width="100%">
-<br>
-<h1 id="1_Liquidtagparsing">Liquid tag parsing</h1><br>
 
-<pre><span id="VALhighlight_exn"><span class="keyword">val</span> highlight_exn</span> : <code class="type"><a href="Jekyll_format.html#TYPEbody">Jekyll_format.body</a> -> <a href="Jekyll_format.html#TYPEbody">Jekyll_format.body</a></code></pre><div class="info ">
+<pre><span class="keyword">module</span> <a href="Jekyll_liquid.Tags.html">Tags</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Jekyll_liquid.Tags.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span id="VALhighlight_exn"><span class="keyword">val</span> highlight_exn</span> : <code class="type">?f:(<a href="Jekyll_liquid.Tags.html#TYPEhighlight">Tags.highlight</a> option -><br>           Astring.String.sub -> Astring.String.sub) -><br>       Astring.String.sub -> Astring.String.sub</code></pre><div class="info ">
 <code class="code">highlight body</code> parses the body for Jekyll ` tags and
-    transforms them into vanilla Markdown.<br>
+    applies <code class="code">f</code> to them and substitutes the result into the tag body.
+    The default <code class="code">f</code> is <a href="Jekyll_liquid.html#VALhighlight_markdown_code"><code class="code"><span class="constructor">Jekyll_liquid</span>.highlight_markdown_code</code></a> that transforms them into
+    vanilla Markdown with no special highlighting except for a code segment.<br>
 </div>
 
-<pre><span class="keyword">module</span> <a href="Jekyll_liquid.Tag_parser.html">Tag_parser</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Jekyll_liquid.Tag_parser.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info">
-Functions for parsing individual Liquid template tags
+<pre><span id="VALhighlight_markdown_code"><span class="keyword">val</span> highlight_markdown_code</span> : <code class="type"><a href="Jekyll_liquid.Tags.html#TYPEhighlight">Tags.highlight</a> option -><br>       Astring.String.sub -> Astring.String.sub</code></pre><div class="info ">
+<code class="code">highlight_markdown_code s</code> will wrap the code in <code class="code">s</code> in a Markdown
+    code segment. This can be parsed to <a href="Jekyll_liquid.html#VALhighlight_exn"><code class="code"><span class="constructor">Jekyll_liquid</span>.highlight_exn</code></a> as a sensible
+    default.<br>
 </div>
 </body></html>

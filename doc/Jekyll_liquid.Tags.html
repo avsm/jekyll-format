@@ -1,0 +1,83 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="Up" href="Jekyll_liquid.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of exceptions" rel=Appendix href="index_exceptions.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Jekyll_post" rel="Chapter" href="Jekyll_post.html">
+<link title="Jekyll_format" rel="Chapter" href="Jekyll_format.html">
+<link title="Jekyll_tags" rel="Chapter" href="Jekyll_tags.html">
+<link title="Jekyll_liquid" rel="Chapter" href="Jekyll_liquid.html"><title>Jekyll_liquid.Tags</title>
+</head>
+<body>
+<div class="navbar">&nbsp;<a class="up" href="Jekyll_liquid.html" title="Jekyll_liquid">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Jekyll_liquid.Tags.html">Jekyll_liquid.Tags</a></h1>
+
+<pre><span class="keyword">module</span> Tags: <code class="code"><span class="keyword">sig</span></code> <a href="Jekyll_liquid.Tags.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+
+<pre><code><span id="TYPEhighlight"><span class="keyword">type</span> <code class="type"></code>highlight</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELThighlight.lang">lang</span>&nbsp;: <code class="type">string option</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+optional language of syntax<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELThighlight.body">body</span>&nbsp;: <code class="type">Astring.String.Sub.t</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+code to be highlighted<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELThighlight.linenos">linenos</span>&nbsp;: <code class="type">bool</code>;</code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+whether line numbers should be emitted<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+}
+
+<div class="info ">
+<code class="code">highlight</code> represents the various syntax highlighting options.<br>
+</div>
+
+
+<pre><span id="VALmk_highlight"><span class="keyword">val</span> mk_highlight</span> : <code class="type">?lang:string -><br>       ?body:Astring.String.sub -><br>       ?linenos:bool -> unit -> <a href="Jekyll_liquid.Tags.html#TYPEhighlight">highlight</a></code></pre><div class="info ">
+<code class="code">mk_highlight</code> constructs a <a href="Jekyll_liquid.Tags.html#VALhighlight"><code class="code"><span class="constructor">Jekyll_liquid</span>.<span class="constructor">Tags</span>.highlight</code></a> value. <code class="code">lang</code> defaults to
+    <code class="code"><span class="constructor">None</span></code>, <code class="code">body</code> defaults to <code class="code"><span class="constructor">Astring</span>.<span class="constructor">String</span>.<span class="constructor">Sub</span>.empty</code> and <code class="code">linenos</code>
+    defaults to <code class="code"><span class="keyword">false</span></code>.<br>
+</div>
+
+<pre><span id="VALpp_highlight"><span class="keyword">val</span> pp_highlight</span> : <code class="type"><a href="Jekyll_liquid.Tags.html#TYPEhighlight">highlight</a> Fmt.t</code></pre><div class="info ">
+<code class="code">pp_highlight</code> formats a <a href="Jekyll_liquid.Tags.html#VALhighlight"><code class="code"><span class="constructor">Jekyll_liquid</span>.<span class="constructor">Tags</span>.highlight</code></a> in human-readable format.<br>
+</div>
+
+<pre><span id="VALhighlight"><span class="keyword">val</span> highlight</span> : <code class="type">string -> <a href="Jekyll_liquid.Tags.html#TYPEhighlight">highlight</a> option</code></pre><div class="info ">
+<code class="code">highlight s</code> attempts to parse the contents of a <code class="code">{% highlight %}</code> tag.
+    <code class="code">s</code> should have had the tags removed via <code class="code">extract_tag</code> and just contain
+    the tag body.<br>
+</div>
+
+<pre><span id="VALendhighlight"><span class="keyword">val</span> endhighlight</span> : <code class="type">string -> bool</code></pre><div class="info ">
+<code class="code">endhighlight s</code> checks if a <code class="code">{% endhighlight %}</code> tag is present.
+   <code class="code">s</code> should have had the tags removed via <code class="code">extract_tag</code> and just contain
+   the tag body.<br>
+</div>
+</body></html>

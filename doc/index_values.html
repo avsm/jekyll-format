@@ -9,6 +9,7 @@
 <link title="Index of modules" rel=Appendix href="index_modules.html">
 <link title="Jekyll_post" rel="Chapter" href="Jekyll_post.html">
 <link title="Jekyll_format" rel="Chapter" href="Jekyll_format.html">
+<link title="Jekyll_tags" rel="Chapter" href="Jekyll_tags.html">
 <link title="Jekyll_liquid" rel="Chapter" href="Jekyll_liquid.html"><title>Index of values</title>
 </head>
 <body>
@@ -49,15 +50,33 @@
 </div>
 </td></tr>
 <tr><td align="left"><br>E</td></tr>
-<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALendhighlight">endhighlight</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<tr><td><a href="Jekyll_liquid.Tags.html#VALendhighlight">endhighlight</a> [<a href="Jekyll_liquid.Tags.html">Jekyll_liquid.Tags</a>]</td>
 <td><div class="info">
 <code class="code">endhighlight s</code> checks if a <code class="code">{% endhighlight %}</code> tag is present.
 </div>
 </td></tr>
-<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALextract_tag">extract_tag</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<tr><td><a href="Jekyll_tags.html#VALextract_liquid_tag">extract_liquid_tag</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
 <td><div class="info">
-<code class="code">extract_tag ~start ~stop s</code> will extract a substring that
+<code class="code">extract_liquid_tag</code> behaves as <a href="Jekyll_tags.html#VALextract_tag"><code class="code"><span class="constructor">Jekyll_tags</span>.extract_tag</code></a> but is specialised
+    to parse Jekyll liquid tags of the form <code class="code">{% ... %}</code>.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALextract_liquid_tags">extract_liquid_tags</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">extract_liquid_tags</code> behaves as <a href="Jekyll_tags.html#VALextract_tags"><code class="code"><span class="constructor">Jekyll_tags</span>.extract_tags</code></a> but is specialised
+    to parse Jekyll liquid tags of the form <code class="code">{% ... %}</code>.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALextract_tag">extract_tag</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">extract_tag ?start ~start_tag ~stop_tag s</code> will extract the indices that
     represents the <code class="code">text</code> in <code class="code"><span class="string">"&lt;start&gt;&lt;ws&gt;&lt;text&gt;&lt;ws&gt;&lt;stop&gt;"</span></code>.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALextract_tags">extract_tags</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">extract_tags ?start ~start_tag ~stop_tag s</code> will extract the list of
+    indices that represent the <code class="code">text</code> in <code class="code"><span class="string">"&lt;start_Tag&gt;&lt;ws&gt;&lt;text&gt;&lt;ws&gt;&lt;stop_tag&gt;"</span></code>.
 </div>
 </td></tr>
 <tr><td align="left"><br>F</td></tr>
@@ -73,21 +92,63 @@
 </div>
 </td></tr>
 <tr><td align="left"><br>H</td></tr>
-<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALhighlight">highlight</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<tr><td><a href="Jekyll_liquid.Tags.html#VALhighlight">highlight</a> [<a href="Jekyll_liquid.Tags.html">Jekyll_liquid.Tags</a>]</td>
 <td><div class="info">
-<code class="code">highlight s</code> attempts to parse a <code class="code">{% highlight %}</code> tag.
+<code class="code">highlight s</code> attempts to parse the contents of a <code class="code">{% highlight %}</code> tag.
 </div>
 </td></tr>
 <tr><td><a href="Jekyll_liquid.html#VALhighlight_exn">highlight_exn</a> [<a href="Jekyll_liquid.html">Jekyll_liquid</a>]</td>
 <td><div class="info">
 <code class="code">highlight body</code> parses the body for Jekyll ` tags and
-    transforms them into vanilla Markdown.
+    applies <code class="code">f</code> to them and substitutes the result into the tag body.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_liquid.html#VALhighlight_markdown_code">highlight_markdown_code</a> [<a href="Jekyll_liquid.html">Jekyll_liquid</a>]</td>
+<td><div class="info">
+<code class="code">highlight_markdown_code s</code> will wrap the code in <code class="code">s</code> in a Markdown
+    code segment.
 </div>
 </td></tr>
 <tr><td align="left"><br>K</td></tr>
 <tr><td><a href="Jekyll_format.html#VALkeys">keys</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
 <td><div class="info">
 <code class="code">keys f</code> retrieves all of the key names in the YAML front matter.
+</div>
+</td></tr>
+<tr><td align="left"><br>M</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALmap_liquid_tag_bodies">map_liquid_tag_bodies</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">map_liquid_tag_bodies</code> operates as <a href="Jekyll_tags.html#VALmap_tag_bodies"><code class="code"><span class="constructor">Jekyll_tags</span>.map_tag_bodies</code></a> but is specialised
+    to parse Jekyll liquid tags of the form <code class="code">{% ... %}</code>.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALmap_liquid_tags">map_liquid_tags</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">map_liquid_tags ~f body</code> behaves as <a href="Jekyll_tags.html#VALmap_tags"><code class="code"><span class="constructor">Jekyll_tags</span>.map_tags</code></a> but is specialised
+    to parse Jekyll liquid tags of the form <code class="code">{% ... %}</code>.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALmap_tag">map_tag</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">map_tag ~sub tag_info body</code> will substitute the tag_info (typically
+    returned by <a href="Jekyll_tags.html#VALextract_tag"><code class="code"><span class="constructor">Jekyll_tags</span>.extract_tag</code></a> with the value of <code class="code">sub</code>
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALmap_tag_bodies">map_tag_bodies</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">map_tag_bodies ~start_tag ~stop_tag ~f_start ~f_stop ~f_map body</code> searches
+    for tags delimited by <code class="code">start_tag</code> and <code class="code">stop_tag</code>.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_tags.html#VALmap_tags">map_tags</a> [<a href="Jekyll_tags.html">Jekyll_tags</a>]</td>
+<td><div class="info">
+<code class="code">map_tags ~start_tag ~stop_tag ~f body</code> will apply the function <code class="code">f</code>
+    to all the tags found that match <code class="code">start_tag</code> and <code class="code">stop_tag</code>.
+</div>
+</td></tr>
+<tr><td><a href="Jekyll_liquid.Tags.html#VALmk_highlight">mk_highlight</a> [<a href="Jekyll_liquid.Tags.html">Jekyll_liquid.Tags</a>]</td>
+<td><div class="info">
+<code class="code">mk_highlight</code> constructs a <a href="Jekyll_liquid.Tags.html#VALhighlight"><code class="code"><span class="constructor">Jekyll_liquid</span>.<span class="constructor">Tags</span>.highlight</code></a> value.
 </div>
 </td></tr>
 <tr><td align="left"><br>O</td></tr>
@@ -156,9 +217,9 @@
 <code class="code">pp_fields f</code> prints out the YAML front matter in the original layout.
 </div>
 </td></tr>
-<tr><td><a href="Jekyll_liquid.Tag_parser.html#VALpp_highlight">pp_highlight</a> [<a href="Jekyll_liquid.Tag_parser.html">Jekyll_liquid.Tag_parser</a>]</td>
+<tr><td><a href="Jekyll_liquid.Tags.html#VALpp_highlight">pp_highlight</a> [<a href="Jekyll_liquid.Tags.html">Jekyll_liquid.Tags</a>]</td>
 <td><div class="info">
-<code class="code">pp_highlight</code> formats a <a href="Jekyll_liquid.Tag_parser.html#VALhighlight"><code class="code"><span class="constructor">Jekyll_liquid</span>.<span class="constructor">Tag_parser</span>.highlight</code></a> in human-readable format.
+<code class="code">pp_highlight</code> formats a <a href="Jekyll_liquid.Tags.html#VALhighlight"><code class="code"><span class="constructor">Jekyll_liquid</span>.<span class="constructor">Tags</span>.highlight</code></a> in human-readable format.
 </div>
 </td></tr>
 <tr><td align="left"><br>S</td></tr>
@@ -172,7 +233,7 @@
 <tr><td><a href="Jekyll_format.html#VALslug_exn">slug_exn</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
 <td><div class="info">
 <code class="code">slug_exn ?fname f</code> operates as <a href="Jekyll_format.html#VALslug"><code class="code"><span class="constructor">Jekyll_format</span>.slug</code></a> except that it raises a
-    <code class="code"><span class="constructor">Parse_Failure</span></code> in the error case.
+    <a href="Jekyll_format.html#EXCEPTIONParse_failure"><code class="code"><span class="constructor">Jekyll_format</span>.<span class="constructor">Parse_failure</span></code></a> in the error case.
 </div>
 </td></tr>
 <tr><td><a href="Jekyll_format.html#VALslug_of_string">slug_of_string</a> [<a href="Jekyll_format.html">Jekyll_format</a>]</td>
