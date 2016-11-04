@@ -1,4 +1,4 @@
-v0.0.1 2016-10-26 Cambridge
+v0.1.0 2016-11-04 Cambridge
 ---------------------------
 
 Initial public release.
