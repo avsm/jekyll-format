@@ -23,7 +23,7 @@ let of_string t =
   let is_yaml_delimiter s = String.Sub.to_string s = "---" in
   let rec get_yaml acc = function
   | [] -> R.error_msg E.yaml_no_end
-  | hd::tl when String.Sub.length hd = 0 -> R.error_msg E.yaml_no_end
+  | hd::_tl when String.Sub.length hd = 0 -> R.error_msg E.yaml_no_end
   | hd::tl when is_yaml_delimiter hd -> R.ok (List.rev acc, tl)
   | hd::tl ->
      String.Sub.(cut ~sep:(v ":") hd) |> function

@@ -1,0 +1,5 @@
+(test
+  (name test)
+  (flags -w -32)
+  (deps (source_tree _posts))
+  (libraries jekyll-format alcotest bos))

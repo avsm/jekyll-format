@@ -210,7 +210,7 @@ let test_parsing ~base_dir () =
   ) posts
 
 let test_meta ~base_dir () =
-  let base_dir = Fpath.v "test/_posts/basic" in
+  let base_dir = Fpath.v "_posts/basic" in
   ["find", `Quick, test_find ~base_dir;
    "body", `Quick, test_body ~base_dir;
    "slug", `Quick, test_slug]
@@ -229,7 +229,7 @@ let test_date_parsing () =
    "datetime", `Quick, test_datetime_parse;]
 
 let () =
-  let base_dir = Fpath.v "test/_posts" in
+  let base_dir = Fpath.v "_posts" in
   Alcotest.run "post parsing" [
     "parsing", test_parsing ~base_dir ();
     "meta", test_meta ~base_dir ();
