@@ -18,6 +18,8 @@
   rresult
   ptime
   fpath
+  yaml
+  ezjsonm
   (alcotest :with-test)
   (bos :with-test))
  (synopsis "Jekyll post parsing library")

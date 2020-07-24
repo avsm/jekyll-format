@@ -22,9 +22,9 @@ let of_string t =
      match S.cut ~sep post with
      | None -> Ok ([], t)
      | Some (yaml,body) -> begin
-         match Yaml.of_string (S.to_string pre) with
+         match Yaml.of_string (S.to_string yaml) with
          | Ok (`O fields) -> Ok (fields, S.to_string body)
-         | Ok _ -> Ok ([], t)
+         | Ok v  -> Error (`Msg (Fmt.strf "Unexpected Yaml: %s" (Sexplib.Sexp.to_string_hum (Yaml.sexp_of_value v))))
          | Error (`Msg msg) -> Error (`Msg msg)
      end
   end
@@ -36,7 +36,10 @@ let result_to_exn = function
   | Ok r -> r
   | Error (`Msg m) -> raise (Parse_failure m)
 
-let find key (f:fields) =
+let find_yaml key f =
+  List.assoc_opt key f
+
+let find key f =
   List.assoc_opt key f |> Option.map Ezjsonm.value_to_string
 
 let keys f =

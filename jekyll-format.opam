@@ -20,6 +20,8 @@ depends: [
   "rresult"
   "ptime"
   "fpath"
+  "yaml"
+  "ezjsonm"
   "alcotest" {with-test}
   "bos" {with-test}
 ]
