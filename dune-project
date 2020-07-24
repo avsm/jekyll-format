@@ -1,4 +1,5 @@
 (lang dune 2.6)
+(name jekyll-format)
 
 (generate_opam_files true)
 (license MIT)
