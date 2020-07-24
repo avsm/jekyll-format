@@ -6,33 +6,29 @@
 
 open Astring
 open Rresult
+open R.Infix
 
-module E = struct
-  let yaml_no_start = "Unable to find YAML front matter start ---"
-  let yaml_no_end = "Unable to find YAML front matter terminating ---"
-  let yaml_field_parse s = Fmt.strf "Unable to parse YAML field: %s" s
-end
-
-type fields = (String.Sub.t * String.Sub.t) list
-type body = String.Sub.t
+type fields = (string * Yaml.value) list
+type body = string
 type t = fields * body
 
 let of_string t =
-  let open R.Infix in
-  let lines = String.Sub.(cuts ~sep:(v "\n") (v t)) in
-  let is_yaml_delimiter s = String.Sub.to_string s = "---" in
-  let rec get_yaml acc = function
-  | [] -> R.error_msg E.yaml_no_end
-  | hd::_tl when String.Sub.length hd = 0 -> R.error_msg E.yaml_no_end
-  | hd::tl when is_yaml_delimiter hd -> R.ok (List.rev acc, tl)
-  | hd::tl ->
-     String.Sub.(cut ~sep:(v ":") hd) |> function
-     | None -> R.error_msg (E.yaml_field_parse (String.Sub.to_string hd))
-     | Some (k,v) -> get_yaml ((k,String.Sub.trim v) :: acc) tl in
-  match lines with
-  | [] -> R.error_msg E.yaml_no_start
-  | hd::_ when not (is_yaml_delimiter hd) -> R.error_msg E.yaml_no_start
-  | hd::tl -> get_yaml [] tl >>= fun (fields,lines) -> R.ok (fields, String.Sub.(concat ~sep:(v "\n") lines))
+  let module S = String.Sub in
+  let s = S.v t in
+  let sep = S.v "---\n" in
+  match S.cut ~sep s with
+  | None -> Ok ([], t)
+  | Some (pre,post) when S.length pre = 0 -> begin
+     match S.cut ~sep post with
+     | None -> Ok ([], t)
+     | Some (yaml,body) -> begin
+         match Yaml.of_string (S.to_string pre) with
+         | Ok (`O fields) -> Ok (fields, S.to_string body)
+         | Ok _ -> Ok ([], t)
+         | Error (`Msg msg) -> Error (`Msg msg)
+     end
+  end
+  | Some _ -> Ok ([], t)
 
 exception Parse_failure of string
 
@@ -40,27 +36,23 @@ let result_to_exn = function
   | Ok r -> r
   | Error (`Msg m) -> raise (Parse_failure m)
 
+let find key (f:fields) =
+  List.assoc_opt key f |> Option.map Ezjsonm.value_to_string
+
+let keys f =
+  List.map (fun (k,_) -> k) f
+
 let of_string_exn t = of_string t |> result_to_exn
 
 let fields = fst
 let body = snd
-let body_to_string b = String.Sub.to_string b
 
-let find key (f:fields) =
-  try
-    List.find (fun (k,_) -> String.equal (String.Sub.to_string k) key) f |>
-    snd |> String.Sub.to_string |> fun x -> Some x
-  with Not_found -> None
-
-let keys f =
-  List.map (fun (k,v) -> String.Sub.to_string k) f
-
-let pp_body ppf b = Fmt.(pf ppf "%a" String.Sub.pp b) 
+let pp_body ppf b = Fmt.(pf ppf "%s" b)
 
 let pp_fields ppf fields =
   let open Fmt in
   let pp_colon = unit ":" in
-  let pp_field = pair ~sep:pp_colon String.Sub.pp String.Sub.pp in
+  let pp_field = pair ~sep:pp_colon string (fun fmt v -> Fmt.pf fmt "%s" (Ezjsonm.value_to_string v)) in
   let pp_fields = list ~sep:Format.pp_force_newline pp_field in
   pf ppf "%a" pp_fields fields
 
@@ -68,6 +60,7 @@ let pp ppf t =
   let open Fmt in
   pf ppf "\n---\n";
   pf ppf "%a" (pair ~sep:(unit "\n---\n") pp_fields pp_body) t
+
 
 let parse_date_exn ?(and_time=true) s =
   let ymd,hms,tz =

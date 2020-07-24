@@ -39,46 +39,46 @@ module JL = Jekyll_liquid
 module JT = Jekyll_tags
 
 let posts = [
-  "basic", "simple.md", (Ok ());
-  "basic", "no_start_yaml.md", (R.error_msg JF.E.yaml_no_start);
-  "basic", "no_end_yaml.md", (R.error_msg JF.E.yaml_no_end);
-  "basic", "field_parse.md", (R.error_msg (JF.E.yaml_field_parse "alice"));
-  "anil.recoil.org", "2015-02-18-icfp15-call-for-sponsorships.md", (Ok ());
-  "anil.recoil.org", "2015-04-02-ocamllabs-2014-review.md", (Ok ());
+  "simple.md", (Ok ());
+  "no_start_yaml.md", (Ok ());
+  "no_end_yaml.md", (Ok ());
+  "field_parse.md", (Ok ());
+  "2015-02-18-icfp15-call-for-sponsorships.md", (Ok ());
+  "2015-04-02-ocamllabs-2014-review.md", (Ok ());
 ]
 
-let parse_post ~base_dir ~post () =
+let parse_post ~post () =
   let open Rresult.R.Infix in
-  Bos.OS.File.read (Fpath.(base_dir / post)) >>=
+  Bos.OS.File.read (Fpath.(v post)) >>=
   Jekyll_format.of_string
 
-let parse_post_exn ~base_dir ~post () =
-  match parse_post ~base_dir ~post () with
+let parse_post_exn ~post () =
+  match parse_post ~post () with
   | Ok r -> r
   | Error (`Msg m) -> raise Alcotest.Test_error
 
-let test_post ~expect ~base_dir ~post () =
+let test_post ~expect ~post () =
   let test_parse =
     let open Rresult.R.Infix in
-    parse_post ~base_dir ~post () >>= fun t ->
+    parse_post ~post () >>= fun t ->
     Fmt.pr "%a" JF.pp t;
     R.ok () in
   check (result unit rresult_msg) post expect test_parse
 
-let test_find ~base_dir () =
+let test_find () =
   let open Rresult.R.Infix in
-  parse_post_exn ~base_dir ~post:"simple.md" () |>
+  parse_post_exn ~post:"simple.md" () |>
   JF.fields |> fun f ->
   check (option string) "find success" (Some "111") (JF.find "alice" f);
   check (option string) "find fail" None (JF.find "xalice" f);
   check (option string) "find fail case sensitive" None (JF.find "Alice" f);
   check (list string) "find keys" ["alice";"bob";"charlie"] (JF.keys f)
 
-let test_body ~base_dir () =
+let test_body () =
   let open Rresult.R.Infix in
-  parse_post_exn ~base_dir ~post:"simple.md" () |>
+  parse_post_exn ~post:"simple.md" () |>
   JF.body |> fun b ->
-  check string "body" "\nbody\ngoes\nhere\n" (JF.body_to_string b)
+  check string "body" "\nbody\ngoes\nhere\n" b
 let test_tag_extraction () =
   let tags = [
     "{% highlight %}", (Some (0,"highlight",15));
@@ -203,16 +203,14 @@ let test_slug () =
     "  foo and bar  ","--foo-and-bar--" ] |>
   List.iter (fun (f,e) -> check string f e (JF.slug_of_string f))
 
-let test_parsing ~base_dir () =
-  List.map (fun (subdir, post, expect) ->
-    let base_dir = Fpath.(base_dir / subdir) in
-    post, `Quick, (test_post ~expect ~base_dir ~post)
+let test_parsing () =
+  List.map (fun (post, expect) ->
+    post, `Quick, (test_post ~expect ~post)
   ) posts
 
-let test_meta ~base_dir () =
-  let base_dir = Fpath.v "_posts/basic" in
-  ["find", `Quick, test_find ~base_dir;
-   "body", `Quick, test_body ~base_dir;
+let test_meta () =
+  ["find", `Quick, test_find;
+   "body", `Quick, test_body;
    "slug", `Quick, test_slug]
 
 let test_tag_parsing () =
@@ -229,10 +227,9 @@ let test_date_parsing () =
    "datetime", `Quick, test_datetime_parse;]
 
 let () =
-  let base_dir = Fpath.v "_posts" in
   Alcotest.run "post parsing" [
-    "parsing", test_parsing ~base_dir ();
-    "meta", test_meta ~base_dir ();
+    "parsing", test_parsing ();
+    "meta", test_meta ();
     "tags", test_tag_parsing ();
     "date", test_date_parsing ();
   ]

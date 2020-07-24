@@ -3,5 +3,5 @@
   (public_name jekyll-format)
   (wrapped false)
   (flags -w -32)
-  (libraries astring omd result rresult fmt ptime fpath yaml)
+  (libraries astring omd ezjsonm result rresult fmt ptime fpath yaml)
 )

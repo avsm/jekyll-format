@@ -1,5 +1,5 @@
 (test
   (name test)
   (flags -w -32)
-  (deps (source_tree _posts))
+  (deps (glob_files *.md))
   (libraries jekyll-format alcotest bos))

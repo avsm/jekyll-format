@@ -14,7 +14,7 @@ type t
 type fields
 (** [fields] represents the YAML front matter in the blog post *)
 
-type body = Astring.String.Sub.t
+type body = string
 (** [body] represents the blog post content, probably in Markdown format *)
 
 val fields : t -> fields
@@ -63,17 +63,13 @@ val slug_exn : ?fname:string -> fields -> string
 
 (** {1 Conversion functions} *)
 
-val of_string : string -> (t, [> Rresult.R.msg ]) Result.result
+val of_string : string -> (t, [> Rresult.R.msg ]) result
 (** [of_string t] parses a Jekyll-format blog post and either returns a {!t}
     or signals an error in the result. *)
 
 val of_string_exn : string -> t
 (** [of_string_exn t] parses a Jekyll-format blog post and either returns a {!t}
     or raises a {!Parse_failure} exception with the error string. *)
-
-val body_to_string : body -> string
-(** [body_to_string body] serialises the body to an OCaml string, maintaining
-    the original layout and whitespace. *)
 
 val slug_of_string : string -> string
 (** [slug_of_string s] replaces all non-ascii characters ([a..zA..Z0..9]) with
@@ -115,17 +111,6 @@ val pp_body : body Fmt.t
 
 val pp_fields : fields Fmt.t
 (** [pp_fields f] prints out the YAML front matter in the original layout. *)
-
-(** {1 Error strings} *)
-
-(** These are error strings returned by the parser. They are
-    primarily used by the test cases to pattern match on failures
-    and are not for general use. *)
-module E : sig
-  val yaml_no_start : string
-  val yaml_no_end : string
-  val yaml_field_parse : string -> string
-end
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy
