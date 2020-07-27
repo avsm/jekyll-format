@@ -66,13 +66,16 @@ let test_post ~expect ~post () =
   check (result unit rresult_msg) post expect test_parse
 
 let test_find () =
+  let yaml = testable Yaml.pp Yaml.equal in 
   let open Rresult.R.Infix in
   parse_post_exn ~post:"simple.md" () |>
   JF.fields |> fun f ->
-  check (option string) "find success" (Some "111") (JF.find "alice" f);
-  check (option string) "find fail" None (JF.find "xalice" f);
-  check (option string) "find fail case sensitive" None (JF.find "Alice" f);
-  check (list string) "find keys" ["alice";"bob";"charlie"] (JF.keys f)
+  check (option yaml) "find success" (Some (`Float 111.)) (JF.find "alice" f);
+  check (option yaml) "find fail" None (JF.find "xalice" f);
+  check (option yaml) "find fail case sensitive" None (JF.find "Alice" f);
+  check (option yaml) "find list" (Some (`A [`String "a"; `String "b"])) (JF.find "dave" f);
+  check (option yaml) "find yaml string" (Some (`String "four-hundred and forty-four")) (JF.find "eve" f);
+  check (list string) "find keys" ["alice";"bob";"charlie";"dave";"eve"] (JF.keys f)
 
 let test_body () =
   let open Rresult.R.Infix in
@@ -197,6 +200,13 @@ let test_datetime_parse () =
   ] |>
   List.iter (fun (f,e) -> check ptime_check ("datetime " ^ f) e (JF.parse_date_exn f))
 
+  let test_datetime_parse_from_file () = 
+    let ptime_check = testable Ptime.pp Ptime.equal in
+    let datetime d t = Ptime.of_date_time (d,(t,0)) |> option_exn in
+    parse_post_exn ~post:"2015-04-02-ocamllabs-2014-review.md" () |>
+    JF.fields |> fun f ->
+    check ptime_check "find success" (datetime (2014, 04, 24) (17, 14, 07)) (JF.date_exn f)
+
 let test_slug () =
   [ "foo and bar", "foo-and-bar";
     "foo1 and_bar","foo1-and-bar";
@@ -224,7 +234,9 @@ let test_tag_parsing () =
 
 let test_date_parsing () =
   ["date", `Quick, test_filename_date;
-   "datetime", `Quick, test_datetime_parse;]
+   "datetime", `Quick, test_datetime_parse;
+   "from file", `Quick, test_datetime_parse_from_file;
+   ]
 
 let () =
   Alcotest.run "post parsing" [

@@ -25,16 +25,10 @@ val body : t -> body
 
 (** {1 YAML metadata} *)
 
-val find_yaml : string -> fields -> Yaml.value option
+val find : string -> fields -> Yaml.value option
 (** [find key t] retrieves the first [key] from the YAML front matter, and
     [None] if the key is not present. Keys are case-sensitive as per the
     YAML specification.  Whitespace is trimmed around the field value. *)
-
-val find : string -> fields -> string option
-(** [find key t] retrieves the first [key] from the YAML front matter, and
-    [None] if the key is not present. Keys are case-sensitive as per the
-    YAML specification.  Whitespace is trimmed around the field value,
-    and any Yaml contents are converted to a string representation. *)
 
 val keys : fields -> string list
 (** [keys f] retrieves all of the key names in the YAML front matter. *)
