@@ -36,11 +36,8 @@ let result_to_exn = function
   | Ok r -> r
   | Error (`Msg m) -> raise (Parse_failure m)
 
-let find_yaml key f =
-  List.assoc_opt key f
-
 let find key f =
-  List.assoc_opt key f |> Option.map Ezjsonm.value_to_string
+  List.assoc_opt key f
 
 let keys f =
   List.map (fun (k,_) -> k) f
@@ -157,8 +154,8 @@ let slug_of_string s =
 let title ?fname f =
   let open R.Infix in
   match find "title" f with
-  | Some t -> Ok t
-  | None ->
+  | Some `String t -> Ok t
+  | _ ->
       match fname with
       | None -> R.error_msg "Unable to find a title key or parse the filename for it"
       | Some fname -> parse_filename fname >>| fun (_,title,_) -> title
@@ -166,15 +163,15 @@ let title ?fname f =
 let date ?fname f =
   let open R.Infix in
   match (find "date" f), fname with
-  | Some d, _ -> parse_date ~and_time:true d
-  | None, Some fname -> parse_filename fname >>| fun (date,_,_) -> date
-  | None, None -> R.error_msg "Unable to find a date key or parse the filename for it"
+  | Some `String d, _ -> parse_date ~and_time:true d
+  | _, Some fname -> parse_filename fname >>| fun (date,_,_) -> date
+  | _, None -> R.error_msg "Unable to find a date key or parse the filename for it"
 
 let slug ?fname f =
   let open R.Infix in
   match (find "slug" f) with
-  | Some s -> R.ok (slug_of_string s)
-  | None -> (* query filename instead *)
+  | Some `String s -> R.ok (slug_of_string s)
+  | _ -> (* query filename instead *)
      match fname with
      | Some fname -> parse_filename fname >>| fun (_,title,_) -> slug_of_string title
      | None ->
