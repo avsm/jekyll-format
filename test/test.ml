@@ -236,33 +236,11 @@ type test = Yaml.value * string
 
 let test = Alcotest.testable (fun ppf v -> Fmt.pf ppf "%a %s" Yaml.pp (fst v) (snd v)) Stdlib.( = )
 
-let test_astring () = 
-  let module S = String.Sub in
-  Bos.OS.File.read (Fpath.(v "simple.md")) |> function Ok t -> (
-  Format.(fprintf std_formatter "BOS INPUT\n===\n%s\n===\n" t);
-  let s = S.v t in
-  let sep = S.v "---\n" in
-  let x = match S.cut ~sep s with
-  | None -> print_endline "Cut 1"; `O [], t
-  | Some (pre,post) when S.length pre = 0 -> begin
-     match S.cut ~sep post with
-     | None -> print_endline "Cut 2"; `O [], t
-     | Some (yaml,body) -> begin
-         match Yaml.of_string (S.to_string yaml) with
-         | Ok (`O fields) -> `O fields, S.to_string body
-         | Ok v  -> failwith ("Unexpected Yaml:" ^ (Sexplib.Sexp.to_string_hum (Yaml.sexp_of_value v)))
-         | Error (`Msg msg) -> failwith msg
-     end
-  end
-  | Some _ -> `O [], t in 
-  Alcotest.check test "of_string" x (`O [("author", `String "Patrick Ferris")],"Some markdown"))
-  | Error _ -> failwith "It all went wrong!"
-
 let test_date_parsing () =
   (* ["date", `Quick, test_filename_date; *)[
    "datetime", `Quick, test_datetime_parse;
    (* "from file", `Quick, test_datetime_parse_from_file; *)
-   "test_astring", `Quick, test_astring;
+   (* "test_astring", `Quick, test_astring; *)
    ]
 
 let () =

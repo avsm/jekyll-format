@@ -15,8 +15,8 @@ type t = fields * body
 let of_string t =
   let module S = String.Sub in
   let s = S.v t in
-  let sep = S.v "---\n" in
-  match S.cut ~sep s with
+  let sep = S.v "---" in 
+  match S.cut ~sep s with 
   | None -> Ok ([], t)
   | Some (pre,post) when S.length pre = 0 -> begin
      match S.cut ~sep post with
