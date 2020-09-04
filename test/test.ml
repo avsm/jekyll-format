@@ -203,8 +203,8 @@ let test_datetime_parse () =
   let test_datetime_parse_from_file () = 
     let ptime_check = testable Ptime.pp Ptime.equal in
     let datetime d t = Ptime.of_date_time (d,(t,0)) |> option_exn in
-    parse_post_exn ~post:"2015-04-02-ocamllabs-2014-review.md" () |>
-    JF.fields |> fun f ->
+    parse_post_exn ~post:"2015-04-02-ocamllabs-2014-review.md" () |> fun p -> 
+    JF.fields p |> fun f -> Jekyll_format.pp Format.std_formatter p; 
     check ptime_check "find success" (datetime (2014, 04, 24) (17, 14, 07)) (JF.date_exn f)
 
 let test_slug () =
@@ -219,9 +219,9 @@ let test_parsing () =
   ) posts
 
 let test_meta () =
-  ["find", `Quick, test_find;
-   "body", `Quick, test_body;
-   "slug", `Quick, test_slug]
+  (* ["find", `Quick, test_find; *)
+   (* "body", `Quick, test_body; *)
+   ["slug", `Quick, test_slug]
 
 let test_tag_parsing () =
   ["tag", `Quick, test_tag_extraction;
