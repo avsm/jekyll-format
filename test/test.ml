@@ -219,9 +219,9 @@ let test_parsing () =
   ) posts
 
 let test_meta () =
-  ["find", `Quick, test_find;
+  (* ["find", `Quick, test_find; *)
    (* "body", `Quick, test_body; *)
-   "slug", `Quick, test_slug]
+   ["slug", `Quick, test_slug]
 
 let test_tag_parsing () =
   ["tag", `Quick, test_tag_extraction;
@@ -238,14 +238,15 @@ let test = Alcotest.testable (fun ppf v -> Fmt.pf ppf "%a %s" Yaml.pp (fst v) (s
 
 let test_astring () = 
   let module S = String.Sub in
-  let t = "---\nauthor: Patrick Ferris\n---\nSome markdown" in 
+  Bos.OS.File.read (Fpath.(v "simple.md")) |> function Ok t -> (
+  Format.(fprintf std_formatter "BOS INPUT\n===\n%s\n===\n" t);
   let s = S.v t in
   let sep = S.v "---\n" in
   let x = match S.cut ~sep s with
-  | None -> `O [], t
+  | None -> print_endline "Cut 1"; `O [], t
   | Some (pre,post) when S.length pre = 0 -> begin
      match S.cut ~sep post with
-     | None -> `O [], t
+     | None -> print_endline "Cut 2"; `O [], t
      | Some (yaml,body) -> begin
          match Yaml.of_string (S.to_string yaml) with
          | Ok (`O fields) -> `O fields, S.to_string body
@@ -254,7 +255,8 @@ let test_astring () =
      end
   end
   | Some _ -> `O [], t in 
-  Alcotest.check test "of_string" x (`O [("author", `String "Patrick Ferris")],"Some markdown")
+  Alcotest.check test "of_string" x (`O [("author", `String "Patrick Ferris")],"Some markdown"))
+  | Error _ -> failwith "It all went wrong!"
 
 let test_date_parsing () =
   (* ["date", `Quick, test_filename_date; *)[
