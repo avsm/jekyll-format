@@ -261,7 +261,7 @@ let test_astring () =
 let test_date_parsing () =
   (* ["date", `Quick, test_filename_date; *)[
    "datetime", `Quick, test_datetime_parse;
-   "from file", `Quick, test_datetime_parse_from_file;
+   (* "from file", `Quick, test_datetime_parse_from_file; *)
    "test_astring", `Quick, test_astring;
    ]
 
