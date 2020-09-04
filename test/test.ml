@@ -204,7 +204,7 @@ let test_datetime_parse () =
     let ptime_check = testable Ptime.pp Ptime.equal in
     let datetime d t = Ptime.of_date_time (d,(t,0)) |> option_exn in
     parse_post_exn ~post:"2015-04-02-ocamllabs-2014-review.md" () |> fun p -> 
-    JF.fields p |> fun f -> Jekyll_format.pp Format.std_formatter p; 
+    JF.fields p |> fun f -> Jekyll_format.pp_fields Format.std_formatter f;
     check ptime_check "find success" (datetime (2014, 04, 24) (17, 14, 07)) (JF.date_exn f)
 
 let test_slug () =
