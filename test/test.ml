@@ -68,8 +68,8 @@ let test_post ~expect ~post () =
 let test_find () =
   let yaml = testable Yaml.pp Yaml.equal in 
   let open Rresult.R.Infix in
-  parse_post_exn ~post:"simple.md" () |> fun p -> Jekyll_format.pp Format.std_formatter p;
-  JF.fields p |> fun f -> Jekyll_format.pp_fields Format.std_formatter f;
+  parse_post_exn ~post:"simple.md" () |> 
+  JF.fields |> fun f ->
   check (option yaml) "find success" (Some (`Float 111.)) (JF.find "alice" f);
   check (option yaml) "find fail" None (JF.find "xalice" f);
   check (option yaml) "find fail case sensitive" None (JF.find "Alice" f);
@@ -219,9 +219,9 @@ let test_parsing () =
   ) posts
 
 let test_meta () =
-  (* ["find", `Quick, test_find; *)
-   (* "body", `Quick, test_body; *)
-   ["slug", `Quick, test_slug]
+  ["find", `Quick, test_find;
+   "body", `Quick, test_body;
+   "slug", `Quick, test_slug]
 
 let test_tag_parsing () =
   ["tag", `Quick, test_tag_extraction;
@@ -237,10 +237,9 @@ type test = Yaml.value * string
 let test = Alcotest.testable (fun ppf v -> Fmt.pf ppf "%a %s" Yaml.pp (fst v) (snd v)) Stdlib.( = )
 
 let test_date_parsing () =
-  (* ["date", `Quick, test_filename_date; *)[
+  ["date", `Quick, test_filename_date;
    "datetime", `Quick, test_datetime_parse;
-   (* "from file", `Quick, test_datetime_parse_from_file; *)
-   (* "test_astring", `Quick, test_astring; *)
+   "from file", `Quick, test_datetime_parse_from_file;
    ]
 
 let () =

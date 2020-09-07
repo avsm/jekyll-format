@@ -15,20 +15,24 @@ type t = fields * body
 let of_string t =
   let module S = String.Sub in
   let s = S.v t in
-  let sep = S.v "---" in 
-  match S.cut ~sep s with 
-  | None -> Ok ([], t)
-  | Some (pre,post) when S.length pre = 0 -> begin
-     match S.cut ~sep post with
-     | None -> Ok ([], t)
-     | Some (yaml,body) -> begin
-         match Yaml.of_string (S.to_string yaml) with
-         | Ok (`O fields) -> Ok (fields, S.to_string body)
-         | Ok v  -> Error (`Msg (Fmt.strf "Unexpected Yaml: %s" (Sexplib.Sexp.to_string_hum (Yaml.sexp_of_value v))))
-         | Error (`Msg msg) -> Error (`Msg msg)
-     end
-  end
-  | Some _ -> Ok ([], t)
+  let sep = S.v "---\n" in
+  let win = S.v "---\r\n" in
+  match (S.cut ~sep s, S.cut ~sep:win s) with
+  | None, None -> Ok ([], t)
+  | Some (pre, post), _ | _, Some (pre, post) ->
+      if S.length pre = 0 then
+        match (S.cut ~sep post, S.cut ~sep:win post) with
+        | None, None -> print_endline "none?"; Ok ([], t)
+        | Some (yaml, body), _ | _, Some (yaml, body) -> (
+            match Yaml.of_string (S.to_string yaml) with
+            | Ok (`O fields) -> Ok (fields, S.to_string body)
+            | Ok v ->
+                Error
+                  (`Msg
+                    (Fmt.strf "Unexpected Yaml: %s"
+                       (Sexplib.Sexp.to_string_hum (Yaml.sexp_of_value v))))
+            | Error (`Msg msg) -> Error (`Msg msg) )
+      else Ok ([], t)
 
 exception Parse_failure of string
 
