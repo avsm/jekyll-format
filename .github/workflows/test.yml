@@ -15,7 +15,7 @@ jobs:
         ocaml-version: ${{ matrix.ocaml-version }}
     - run: opam pin add jekyll-format.dev -n .
     - name: Packages
-      run: opam depext -yt jekyll-format
+      run: opam depext -y jekyll-format
     - name: Dependencies
       run: opam install -t . --deps-only
     - name: Build
