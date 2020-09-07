@@ -77,11 +77,14 @@ let test_find () =
   check (option yaml) "find yaml string" (Some (`String "four-hundred and forty-four")) (JF.find "eve" f);
   check (list string) "find keys" ["alice";"bob";"charlie";"dave";"eve"] (JF.keys f)
 
+let remove_returns s = 
+  String.concat ~sep:"" (StringLabels.split_on_char ~sep:'\r' s)
+
 let test_body () =
   let open Rresult.R.Infix in
   parse_post_exn ~post:"simple.md" () |>
-  JF.body |> fun b ->
-  check string "body" "\nbody\ngoes\nhere\n" b
+  JF.body |> fun b -> 
+  check string "body" "\nbody\ngoes\nhere\n" (remove_returns b)
 let test_tag_extraction () =
   let tags = [
     "{% highlight %}", (Some (0,"highlight",15));
