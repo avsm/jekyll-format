@@ -68,7 +68,7 @@ let test_post ~expect ~post () =
 let test_find () =
   let yaml = testable Yaml.pp Yaml.equal in 
   let open Rresult.R.Infix in
-  parse_post_exn ~post:"simple.md" () |>
+  parse_post_exn ~post:"simple.md" () |> 
   JF.fields |> fun f ->
   check (option yaml) "find success" (Some (`Float 111.)) (JF.find "alice" f);
   check (option yaml) "find fail" None (JF.find "xalice" f);
@@ -77,11 +77,14 @@ let test_find () =
   check (option yaml) "find yaml string" (Some (`String "four-hundred and forty-four")) (JF.find "eve" f);
   check (list string) "find keys" ["alice";"bob";"charlie";"dave";"eve"] (JF.keys f)
 
+let remove_returns s = 
+  String.concat ~sep:"" (StringLabels.split_on_char ~sep:'\r' s)
+
 let test_body () =
   let open Rresult.R.Infix in
   parse_post_exn ~post:"simple.md" () |>
-  JF.body |> fun b ->
-  check string "body" "\nbody\ngoes\nhere\n" b
+  JF.body |> fun b -> 
+  check string "body" "\nbody\ngoes\nhere\n" (remove_returns b)
 let test_tag_extraction () =
   let tags = [
     "{% highlight %}", (Some (0,"highlight",15));
@@ -203,8 +206,8 @@ let test_datetime_parse () =
   let test_datetime_parse_from_file () = 
     let ptime_check = testable Ptime.pp Ptime.equal in
     let datetime d t = Ptime.of_date_time (d,(t,0)) |> option_exn in
-    parse_post_exn ~post:"2015-04-02-ocamllabs-2014-review.md" () |>
-    JF.fields |> fun f ->
+    parse_post_exn ~post:"2015-04-02-ocamllabs-2014-review.md" () |> fun p -> 
+    JF.fields p |> fun f -> Jekyll_format.pp_fields Format.std_formatter f;
     check ptime_check "find success" (datetime (2014, 04, 24) (17, 14, 07)) (JF.date_exn f)
 
 let test_slug () =
@@ -231,6 +234,10 @@ let test_tag_parsing () =
    "tag replace", `Quick, test_tag_map;
    "tags replace", `Quick, test_tags_map;
   ]
+
+type test = Yaml.value * string 
+
+let test = Alcotest.testable (fun ppf v -> Fmt.pf ppf "%a %s" Yaml.pp (fst v) (snd v)) Stdlib.( = )
 
 let test_date_parsing () =
   ["date", `Quick, test_filename_date;
