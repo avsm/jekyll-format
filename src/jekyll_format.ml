@@ -49,6 +49,8 @@ let keys f =
 let of_string_exn t = of_string t |> result_to_exn
 
 let fields = fst
+
+let fields_to_yaml fs = `O fs 
 let body = snd
 
 let pp_body ppf b = Fmt.(pf ppf "%s" b)

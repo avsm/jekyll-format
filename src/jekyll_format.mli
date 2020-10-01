@@ -20,6 +20,9 @@ type body = string
 val fields : t -> fields
 (** [fields t] retrieves the YAML front matter fields from the blog post *)
 
+val fields_to_yaml : fields -> Yaml.value 
+(** [fields_to_yaml fs] converts [fs] to a [Yaml.value] *)
+
 val body : t -> body
 (** [body t] retrieves the blog post content from the blog post *)
 
