@@ -8,6 +8,7 @@ v0.2.0 2021-04-25 Cambridge
 - port to dune (@avsm)
 - use Yaml library to parse front matter instead of a homebrew parser. (@avsm)
 - use ocamlformat 0.18.0 (@avsm)
+- minimum OCaml version supported is now 4.05+ (@avsm)
 
 v0.1.0 2016-11-04 Cambridge
 ---------------------------

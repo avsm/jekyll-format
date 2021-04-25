@@ -10,7 +10,7 @@
 (package
  (name jekyll-format)
  (depends
-  (ocaml (>= 4.03.0))
+  (ocaml (>= 4.05.0))
   result
   astring
   omd
