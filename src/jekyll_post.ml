@@ -9,12 +9,12 @@ open Rresult
 module JF = Jekyll_format
 
 type t = {
-  fname: string option;
-  title: string;
-  date: Ptime.t;
-  slug: string;
-  body: Jekyll_format.body;
-  fields: Jekyll_format.fields;
+  fname : string option;
+  title : string;
+  date : Ptime.t;
+  slug : string;
+  body : Jekyll_format.body;
+  fields : Jekyll_format.fields;
 }
 
 let result_to_exn = function
@@ -29,15 +29,12 @@ let of_string ?fname post =
   JF.title ?fname fields >>= fun title ->
   JF.date ?fname fields >>= fun date ->
   JF.slug ?fname fields >>= fun slug ->
-  Ok { fname; title; date; body; slug; fields } 
+  Ok { fname; title; date; body; slug; fields }
 
-let of_string_exn ?fname post =
-  of_string ?fname post |> result_to_exn
+let of_string_exn ?fname post = of_string ?fname post |> result_to_exn
 
 let compare a b =
-  match Ptime.compare a.date b.date with
-  | 0 -> compare a.title b.title
-  | n -> n
+  match Ptime.compare a.date b.date with 0 -> compare a.title b.title | n -> n
 
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy

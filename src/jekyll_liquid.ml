@@ -8,43 +8,38 @@ open Astring
 module JF = Jekyll_format
 
 module Tags = struct
-  type highlight = {
-    lang: string option;
-    body: String.Sub.t;
-    linenos: bool;
-  }
+  type highlight = { lang : string option; body : String.Sub.t; linenos : bool }
 
-  let mk_highlight ?lang ?(body=String.Sub.empty) ?(linenos=false) () =
+  let mk_highlight ?lang ?(body = String.Sub.empty) ?(linenos = false) () =
     { lang; body; linenos }
 
-  let pp_highlight ppf {lang; body; linenos} =
+  let pp_highlight ppf { lang; body; linenos } =
     let open Fmt in
-    pf ppf "lang: %a linenos: %a@,body:@,%a"
-      (option string) lang String.Sub.pp body bool linenos
+    pf ppf "lang: %a linenos: %a@,body:@,%a" (option string) lang String.Sub.pp
+      body bool linenos
 
-  let mk_highlight ?lang ?(body=String.Sub.empty) ?(linenos=false) () =
+  let mk_highlight ?lang ?(body = String.Sub.empty) ?(linenos = false) () =
     { lang; body; linenos }
 
   let highlight tag_data =
     String.cuts ~empty:false ~sep:" " tag_data |> function
-    | ["highlight"] -> Some (mk_highlight ())
-    | ["highlight";lang] -> Some (mk_highlight ~lang ())
-    | ["highlight";lang;"linenos"] -> Some (mk_highlight ~lang ~linenos:true ())
+    | [ "highlight" ] -> Some (mk_highlight ())
+    | [ "highlight"; lang ] -> Some (mk_highlight ~lang ())
+    | [ "highlight"; lang; "linenos" ] ->
+        Some (mk_highlight ~lang ~linenos:true ())
     | _ -> None
 
-  let endhighlight tag_data =
-    tag_data = "endhighlight"
+  let endhighlight tag_data = tag_data = "endhighlight"
 end
 
 let highlight_markdown_code h s =
   let delim = String.Sub.v "```" in
-  String.Sub.concat [delim;s;delim]
+  String.Sub.concat [ delim; s; delim ]
 
-let highlight_exn ?(f=highlight_markdown_code) body =
-  Jekyll_tags.map_liquid_tag_bodies
-    ~f_start:Tags.highlight ~f_stop:Tags.endhighlight ~f_map:f body
-  
- 
+let highlight_exn ?(f = highlight_markdown_code) body =
+  Jekyll_tags.map_liquid_tag_bodies ~f_start:Tags.highlight
+    ~f_stop:Tags.endhighlight ~f_map:f body
+
 (*---------------------------------------------------------------------------
    Copyright (c) 2016 Anil Madhavapeddy
 
@@ -60,4 +55,3 @@ let highlight_exn ?(f=highlight_markdown_code) body =
    ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
    OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
   ---------------------------------------------------------------------------*)
-

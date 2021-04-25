@@ -6,29 +6,29 @@
 
 (** Jekyll blog post handling library
 
-    {{:https://jekyllrb.com }Jekyll} is a simple, blog-aware static site
-    generator that takes a template directory of files and turns them into
-    a website. This library exists to parse those blog posts and make them
-    easy to manipulate from OCaml code.
+    {{:https://jekyllrb.com} Jekyll} is a simple, blog-aware static site
+    generator that takes a template directory of files and turns them into a
+    website. This library exists to parse those blog posts and make them easy to
+    manipulate from OCaml code.
 
-    {e %%VERSION%% — {{:%%PKG_HOMEPAGE%% }homepage}} *)
+    {e %%VERSION%% — {{:%%PKG_HOMEPAGE%%} homepage}} *)
 
 type t = {
-  fname: string option;
-  title: string;
-  date: Ptime.t;
-  slug: string;
-  body: Jekyll_format.body;
-  fields: Jekyll_format.fields;
+  fname : string option;
+  title : string;
+  date : Ptime.t;
+  slug : string;
+  body : Jekyll_format.body;
+  fields : Jekyll_format.fields;
 }
 (** [t] is a single Jekyll-format post that has been parsed *)
 
-val of_string : ?fname:string -> string -> (t, [>Rresult.R.msg]) Result.result
+val of_string : ?fname:string -> string -> (t, [> Rresult.R.msg ]) Result.result
 (** [of_string ?fname body] *)
 
 val of_string_exn : ?fname:string -> string -> t
-(** [of_string_exn ?fname body] operates as {!of_string} except that it raises
-    a {!Jekyll_format.Parse_failure} exception on error. *)
+(** [of_string_exn ?fname body] operates as {!of_string} except that it raises a
+    {!Jekyll_format.Parse_failure} exception on error. *)
 
 val compare : t -> t -> int
 (** [compare a b] will compare by date and then lexigraphically on the title *)
