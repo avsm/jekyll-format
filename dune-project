@@ -1,12 +1,11 @@
-(lang dune 2.6)
+(lang dune 2.8)
 (name jekyll-format)
 
 (generate_opam_files true)
 (license MIT)
 (maintainers "Anil Madhavapeddy <anil@recoil.org>")
-(authors "Anil Madhavapeddy")
+(authors "Anil Madhavapeddy" "Patrick Ferris")
 (source (github avsm/jekyll-format))
-(documentation "https://anil-code.recoil.org/jekyll-format")
 
 (package
  (name jekyll-format)

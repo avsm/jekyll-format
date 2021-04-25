@@ -5,13 +5,12 @@ description: """
 This library provides an OCaml interface to parsing
 posts in the Jekyll format."""
 maintainer: ["Anil Madhavapeddy <anil@recoil.org>"]
-authors: ["Anil Madhavapeddy"]
+authors: ["Anil Madhavapeddy" "Patrick Ferris"]
 license: "MIT"
 homepage: "https://github.com/avsm/jekyll-format"
-doc: "https://anil-code.recoil.org/jekyll-format"
 bug-reports: "https://github.com/avsm/jekyll-format/issues"
 depends: [
-  "dune" {>= "2.6"}
+  "dune" {>= "2.8"}
   "ocaml" {>= "4.03.0"}
   "result"
   "astring"
@@ -24,9 +23,10 @@ depends: [
   "ezjsonm"
   "alcotest" {with-test}
   "bos" {with-test}
+  "odoc" {with-doc}
 ]
 build: [
-  ["dune" "subst"] {pinned}
+  ["dune" "subst"] {dev}
   [
     "dune"
     "build"
