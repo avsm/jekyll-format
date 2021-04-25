@@ -45,7 +45,7 @@ val highlight_exn :
   ?f:(Tags.highlight option -> String.sub -> String.sub) ->
   String.sub ->
   String.sub
-(** [highlight body] parses the body for Jekyll `{% highlight %} tags and
+(** [highlight body] parses the body for Jekyll [{% highlight %}] tags and
     applies [f] to them and substitutes the result into the tag body. The
     default [f] is {!highlight_markdown_code} that transforms them into vanilla
     Markdown with no special highlighting except for a code segment. *)
