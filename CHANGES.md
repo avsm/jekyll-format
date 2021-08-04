@@ -1,3 +1,8 @@
+v0.3.0
+------
+
+- Shift to Yaml 3.0.0+ interface with separate `Yaml_sexp` module (@avsm)
+
 v0.2.0 2021-04-25 Cambridge
 ---------------------------
 

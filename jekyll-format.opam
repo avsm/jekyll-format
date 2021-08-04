@@ -12,6 +12,9 @@ bug-reports: "https://github.com/avsm/jekyll-format/issues"
 depends: [
   "dune" {>= "2.8"}
   "ocaml" {>= "4.05.0"}
+  "yaml-sexp" {>= "3.0.0"}
+  "yaml" {>= "3.0.0"}
+  "sexplib"
   "result"
   "astring"
   "omd"
@@ -19,7 +22,6 @@ depends: [
   "rresult"
   "ptime"
   "fpath"
-  "yaml"
   "ezjsonm"
   "alcotest" {with-test}
   "bos" {with-test}
