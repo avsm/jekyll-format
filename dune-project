@@ -1,16 +1,17 @@
 (lang dune 2.8)
 (name jekyll-format)
-
 (generate_opam_files true)
 (license MIT)
 (maintainers "Anil Madhavapeddy <anil@recoil.org>")
 (authors "Anil Madhavapeddy" "Patrick Ferris")
 (source (github avsm/jekyll-format))
-
 (package
  (name jekyll-format)
  (depends
   (ocaml (>= 4.05.0))
+  (yaml-sexp (>= 3.0.0))
+  (yaml (>= 3.0.0))
+  sexplib
   result
   astring
   omd
@@ -18,12 +19,9 @@
   rresult
   ptime
   fpath
-  yaml
   ezjsonm
   (alcotest :with-test)
   (bos :with-test))
  (synopsis "Jekyll post parsing library")
- (description "This library provides an OCaml interface to parsing
-posts in the Jekyll format."))
-
-
+ (description
+  "This library provides an OCaml interface to parsing\nposts in the Jekyll format."))

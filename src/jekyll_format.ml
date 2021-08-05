@@ -34,7 +34,7 @@ let of_string t =
                 Error
                   (`Msg
                     (Fmt.strf "Unexpected Yaml: %s"
-                       (Sexplib.Sexp.to_string_hum (Yaml.sexp_of_value v))))
+                       (Sexplib.Sexp.to_string_hum (Yaml_sexp.sexp_of_value v))))
             | Error (`Msg msg) -> Error (`Msg msg))
       else Ok ([], t)
 
