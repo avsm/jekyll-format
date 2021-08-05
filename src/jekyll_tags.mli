@@ -20,9 +20,10 @@ val extract_tag :
     represents the [text] in ["<start><ws><text><ws><stop>"]. Whitespace is
     trimmed, and [None] is returned if non-empty text could not be parsed.
 
-    @return starting index of the tag within the string, the tag contents with
-    whitespace trimmed, and the index of the first character after the end tag
-    (which may be out of bounds of the string) *)
+    @return
+      starting index of the tag within the string, the tag contents with
+      whitespace trimmed, and the index of the first character after the end tag
+      (which may be out of bounds of the string) *)
 
 val extract_tags :
   ?start:int ->
@@ -35,9 +36,10 @@ val extract_tags :
     ["<start_Tag><ws><text><ws><stop_tag>"]. Whitespace is trimmed from the
     [text] body.
 
-    @return list of tuples of the starting index of the tag within the string,
-    the tag contents with whitespace trimmed, and the index of the first
-    character after the end tag (which may be out of bounds of the string) *)
+    @return
+      list of tuples of the starting index of the tag within the string, the tag
+      contents with whitespace trimmed, and the index of the first character
+      after the end tag (which may be out of bounds of the string) *)
 
 val map_tag : sub:String.sub -> int * string * int -> String.sub -> String.sub
 (** [map_tag ~sub tag_info body] will substitute the tag_info (typically
