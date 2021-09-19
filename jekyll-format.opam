@@ -10,7 +10,7 @@ license: "MIT"
 homepage: "https://github.com/avsm/jekyll-format"
 bug-reports: "https://github.com/avsm/jekyll-format/issues"
 depends: [
-  "dune" {>= "2.8"}
+  "dune" {>= "2.9"}
   "ocaml" {>= "4.05.0"}
   "yaml-sexp" {>= "3.0.0"}
   "yaml" {>= "3.0.0"}
@@ -22,7 +22,7 @@ depends: [
   "rresult"
   "ptime"
   "fpath"
-  "ezjsonm" {>="1.1.0"}
+  "ezjsonm" {>= "1.1.0"}
   "alcotest" {with-test}
   "bos" {with-test}
   "odoc" {with-doc}
@@ -36,9 +36,11 @@ build: [
     name
     "-j"
     jobs
+    "--promote-install-files=false"
     "@install"
     "@runtest" {with-test}
     "@doc" {with-doc}
   ]
+  ["dune" "install" "-p" name "--create-install-files" name]
 ]
 dev-repo: "git+https://github.com/avsm/jekyll-format.git"

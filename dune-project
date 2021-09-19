@@ -1,4 +1,4 @@
-(lang dune 2.8)
+(lang dune 2.9)
 (name jekyll-format)
 (generate_opam_files true)
 (license MIT)
@@ -19,7 +19,7 @@
   rresult
   ptime
   fpath
-  ezjsonm
+  (ezjsonm (>= 1.1.0))
   (alcotest :with-test)
   (bos :with-test))
  (synopsis "Jekyll post parsing library")

@@ -1,3 +1,8 @@
+dev
+---
+
+- Update dune/opam builds to dune 2.9 format
+
 v0.3.0 2021-08-05 Cambridge
 ---------------------------
 
