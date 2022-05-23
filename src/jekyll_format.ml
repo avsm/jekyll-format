@@ -33,7 +33,7 @@ let of_string t =
             | Ok v ->
                 Error
                   (`Msg
-                    (Fmt.strf "Unexpected Yaml: %s"
+                    (Fmt.str "Unexpected Yaml: %s"
                        (Sexplib.Sexp.to_string_hum (Yaml_sexp.sexp_of_value v))))
             | Error (`Msg msg) -> Error (`Msg msg))
       else Ok ([], t)
@@ -60,7 +60,7 @@ let pp_body ppf b = Fmt.(pf ppf "%s" b)
 
 let pp_fields ppf fields =
   let open Fmt in
-  let pp_colon = unit ":" in
+  let pp_colon = any ":" in
   let pp_field =
     pair ~sep:pp_colon string (fun fmt v ->
         Fmt.pf fmt "%s" (Ezjsonm.value_to_string v))
@@ -71,7 +71,7 @@ let pp_fields ppf fields =
 let pp ppf t =
   let open Fmt in
   pf ppf "\n---\n";
-  pf ppf "%a" (pair ~sep:(unit "\n---\n") pp_fields pp_body) t
+  pf ppf "%a" (pair ~sep:(any "\n---\n") pp_fields pp_body) t
 
 let parse_date_exn ?(and_time = true) s =
   let ymd, hms, tz =

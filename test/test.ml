@@ -179,7 +179,7 @@ let test_tags_map () =
            ~f:(function
              | tag when tag = "foo" ->
                  incr x;
-                 Some (Fmt.strf "%s%d" tag !x)
+                 Some (Fmt.str "%s%d" tag !x)
              | tag -> None)
            (S.v a)
          |> S.to_string))
