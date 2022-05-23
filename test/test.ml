@@ -12,7 +12,6 @@ let rresult_msg =
     type t = Rresult.R.msg
 
     let pp = Rresult.R.pp_msg
-
     let equal = ( = )
   end in
   (module M : TESTABLE with type t = M.t)
@@ -23,7 +22,6 @@ let astring_sub =
     type t = sub
 
     let pp = Sub.pp
-
     let equal = Sub.equal_bytes
   end in
   (module M : TESTABLE with type t = M.t)
@@ -33,7 +31,6 @@ let highlight_testable =
     type t = Jekyll_liquid.Tags.highlight
 
     let pp = Jekyll_liquid.Tags.pp_highlight
-
     let equal = ( = )
   end in
   (module M : TESTABLE with type t = M.t)

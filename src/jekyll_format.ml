@@ -9,9 +9,7 @@ open Rresult
 open R.Infix
 
 type fields = (string * Yaml.value) list
-
 type body = string
-
 type t = fields * body
 
 let of_string t =
@@ -45,17 +43,11 @@ let result_to_exn = function
   | Error (`Msg m) -> raise (Parse_failure m)
 
 let find key f = List.assoc_opt key f
-
 let keys f = List.map (fun (k, _) -> k) f
-
 let of_string_exn t = of_string t |> result_to_exn
-
 let fields = fst
-
 let fields_to_yaml fs = `O fs
-
 let body = snd
-
 let pp_body ppf b = Fmt.(pf ppf "%s" b)
 
 let pp_fields ppf fields =
@@ -219,9 +211,7 @@ let slug ?fname f =
                 "Unable to find a slug key or parse the filename for it"))
 
 let date_exn ?fname f = date ?fname f |> result_to_exn
-
 let title_exn ?fname f = title ?fname f |> result_to_exn
-
 let slug_exn ?fname f = title ?fname f |> result_to_exn
 
 (*---------------------------------------------------------------------------
