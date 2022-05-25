@@ -1,5 +1,5 @@
-dev
----
+v0.3.1 2022-05-25 Cambridge
+---------------------------
 
 - Use non-deprecated Fmt interfaces (Fmt.any, Fmt.unit, Fmt.str)
 - Update dune/opam builds to dune 2.9 format
