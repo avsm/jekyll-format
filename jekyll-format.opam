@@ -11,11 +11,10 @@ homepage: "https://github.com/avsm/jekyll-format"
 bug-reports: "https://github.com/avsm/jekyll-format/issues"
 depends: [
   "dune" {>= "2.9"}
-  "ocaml" {>= "4.05.0"}
+  "ocaml" {>= "4.08.0"}
   "yaml-sexp" {>= "3.0.0"}
   "yaml" {>= "3.0.0"}
   "sexplib"
-  "result"
   "astring"
   "omd"
   "fmt"

@@ -8,11 +8,10 @@
 (package
  (name jekyll-format)
  (depends
-  (ocaml (>= 4.05.0))
+  (ocaml (>= 4.08.0))
   (yaml-sexp (>= 3.0.0))
   (yaml (>= 3.0.0))
   sexplib
-  result
   astring
   omd
   fmt

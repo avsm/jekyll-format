@@ -23,7 +23,7 @@ type t = {
 }
 (** [t] is a single Jekyll-format post that has been parsed *)
 
-val of_string : ?fname:string -> string -> (t, [> Rresult.R.msg ]) Result.result
+val of_string : ?fname:string -> string -> (t, [> Rresult.R.msg ]) result
 (** [of_string ?fname body] *)
 
 val of_string_exn : ?fname:string -> string -> t

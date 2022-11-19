@@ -37,7 +37,7 @@ val keys : fields -> string list
 (** [keys f] retrieves all of the key names in the YAML front matter. *)
 
 val title :
-  ?fname:string -> fields -> (string, [> Rresult.R.msg ]) Result.result
+  ?fname:string -> fields -> (string, [> Rresult.R.msg ]) result
 (** [title ?fname f] will query the title from the YAML metadata, and fallback
     to parsing the optional [fname] filename of the post if no explicit key is
     found. If nothing works then [None] is returned. *)
@@ -47,7 +47,7 @@ val title_exn : ?fname:string -> fields -> string
     {!Parse_failure} exception on error. *)
 
 val date :
-  ?fname:string -> fields -> (Ptime.t, [> Rresult.R.msg ]) Result.result
+  ?fname:string -> fields -> (Ptime.t, [> Rresult.R.msg ]) result
 (** [date ?fname f] will query the post date from the YAML metadata, and
     fallback to parsing the optional [fname] filename of the post if no explicit
     key is found. *)
@@ -56,7 +56,7 @@ val date_exn : ?fname:string -> fields -> Ptime.t
 (** [date_exn ?fname f] operates as {!date} except that it raises a
     {!Parse_failure} in the error case. *)
 
-val slug : ?fname:string -> fields -> (string, [> Rresult.R.msg ]) Result.result
+val slug : ?fname:string -> fields -> (string, [> Rresult.R.msg ]) result
 (** [slug ?fname f] will query the slug name from the YAML metadata, or
     calculate it from the filename if no explicit slug field is set, and finally
     fallback to parsing the {!title} of the post if nothing else is found. The
@@ -81,7 +81,7 @@ val slug_of_string : string -> string
     the [-] hyphen character. The result is also lowercase. *)
 
 val parse_filename :
-  string -> (Ptime.t * string * string, [> Rresult.R.msg ]) Result.result
+  string -> (Ptime.t * string * string, [> Rresult.R.msg ]) result
 (** [parse_filename f] parses a Jekyll format filename
     [YEAR-MONTH-DAY-title.MARKUP] and returns the time, title and markup
     components respectively. If the time could not be parsed, then the header is
@@ -92,7 +92,7 @@ val parse_filename_exn : string -> Ptime.t * string * string
     {!Parse_failure} in the error case. *)
 
 val parse_date :
-  ?and_time:bool -> string -> (Ptime.t, [> Rresult.R.msg ]) Result.result
+  ?and_time:bool -> string -> (Ptime.t, [> Rresult.R.msg ]) result
 (** [parse_date ?and_time s] parses a Jekyll format date field in
     [YYYY-MM-DD HH:MM:SS +/-TT:TT] format, where the HMS and timezone components
     are optional. [and_time] defaults to true and causes the non-date components

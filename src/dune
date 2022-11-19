@@ -8,7 +8,6 @@
   sexplib
   omd
   ezjsonm
-  result
   rresult
   fmt
   ptime

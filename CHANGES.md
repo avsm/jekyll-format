@@ -1,3 +1,9 @@
+v0.3.2 2022-11-19 Cambridge
+---------------------------
+
+- Remove dependency on `Result.result` and just use `result`.
+  Bumps up the minimum OCaml version to 4.08+.
+
 v0.3.1 2022-05-25 Cambridge
 ---------------------------
 
