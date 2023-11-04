@@ -6,7 +6,6 @@
  (libraries
   astring
   sexplib
-  omd
   ezjsonm
   rresult
   fmt

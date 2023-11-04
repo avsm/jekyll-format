@@ -1,3 +1,8 @@
+v0.3.3 2023-11-04 Cambridge
+---------------------------
+
+- Remove unnecessary dependency on `omd`.
+
 v0.3.2 2022-11-19 Cambridge
 ---------------------------
 

@@ -13,7 +13,6 @@
   (yaml (>= 3.0.0))
   sexplib
   astring
-  omd
   fmt
   rresult
   ptime
