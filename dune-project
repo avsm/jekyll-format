@@ -13,7 +13,7 @@
   (yaml (>= 3.0.0))
   sexplib
   astring
-  fmt
+  (fmt (>="0.8.7"))
   rresult
   ptime
   fpath
