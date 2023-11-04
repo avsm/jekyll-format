@@ -7,12 +7,12 @@ jobs:
     strategy:
       matrix:
         operating-system: [macos-latest, ubuntu-latest, windows-latest]
-        ocaml-compiler: [ '4.14.1', '4.11.1', '4.10.2', '4.09.1', '4.08.1' ]
+        ocaml-compiler: [ '4.14.1', '4.10.2' ]
     steps:
     - uses: actions/checkout@v2
     - uses: ocaml/setup-ocaml@v2
       with:
-        ocaml-compiler: ${{ matrix.ocaml-version }}
+        ocaml-compiler: ${{ matrix.ocaml-compiler }}
     - run: opam pin add jekyll-format.dev -n .
     - name: Packages
       run: opam depext -y jekyll-format
