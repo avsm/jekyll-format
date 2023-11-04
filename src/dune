@@ -3,13 +3,4 @@
  (public_name jekyll-format)
  (wrapped false)
  (flags -w -32)
- (libraries
-  astring
-  sexplib
-  ezjsonm
-  rresult
-  fmt
-  ptime
-  fpath
-  yaml
-  yaml-sexp))
+ (libraries astring sexplib ezjsonm rresult fmt ptime fpath yaml yaml-sexp))
