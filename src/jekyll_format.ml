@@ -176,6 +176,10 @@ let slug_of_string s =
     s
   |> String.Ascii.lowercase
 
+let slug_of_filename s =
+  Fpath.v s |> Fpath.split_ext |> fun (title, _) ->
+  slug_of_string (Fpath.to_string title)
+
 let title ?fname f =
   let open R.Infix in
   match find "title" f with
@@ -201,8 +205,11 @@ let slug ?fname f =
   | _ -> (
       (* query filename instead *)
       match fname with
-      | Some fname ->
-          parse_filename fname >>| fun (_, title, _) -> slug_of_string title
+      | Some fname -> begin
+          match parse_filename fname >>| fun (_, title, _) -> slug_of_string title with
+          | Error _ -> R.ok (slug_of_filename fname)
+          | Ok t as v -> v
+      end
       | None -> (
           match title ?fname f with
           | Ok t -> R.ok (slug_of_string t)
