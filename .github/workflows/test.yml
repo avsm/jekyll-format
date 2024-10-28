@@ -3,10 +3,10 @@ on: [ push, pull_request ]
 jobs:
   run:
     name: Tests
-    runs-on: ${{ matrix.operating-system }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        operating-system: [macos-latest, ubuntu-latest, windows-latest]
+        os: [macos-latest, ubuntu-latest, windows-latest]
         ocaml-compiler: [ '4', '5' ]
     steps:
     - uses: actions/checkout@v2
@@ -14,13 +14,9 @@ jobs:
       with:
         ocaml-compiler: ${{ matrix.ocaml-compiler }}
     - run: opam pin add jekyll-format.dev -n .
-    - name: Packages
-      run: opam depext -y jekyll-format
     - name: Dependencies
       run: opam install -t . --deps-only
     - name: Build
       run: opam exec -- dune build
-    - name: Install 
-      run: opam exec -- dune install
     - name: Test
       run: opam exec -- dune runtest
