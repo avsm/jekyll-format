@@ -205,11 +205,12 @@ let slug ?fname f =
   | _ -> (
       (* query filename instead *)
       match fname with
-      | Some fname -> begin
-          match parse_filename fname >>| fun (_, title, _) -> slug_of_string title with
+      | Some fname -> (
+          match
+            parse_filename fname >>| fun (_, title, _) -> slug_of_string title
+          with
           | Error _ -> R.ok (slug_of_filename fname)
-          | Ok t as v -> v
-      end
+          | Ok t as v -> v)
       | None -> (
           match title ?fname f with
           | Ok t -> R.ok (slug_of_string t)
