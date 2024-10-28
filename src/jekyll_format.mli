@@ -82,8 +82,8 @@ val parse_filename :
   string -> (Ptime.t * string * string, [> Rresult.R.msg ]) result
 (** [parse_filename f] parses a Jekyll format filename
     [YEAR-MONTH-DAY-title.MARKUP] and returns the time, title and markup
-    components respectively. If the time could not be parsed, then the header is
-    assumed to be the title and [None] is returned for the time. *)
+    components respectively. If the time could not be parsed, then an error is
+    returned. *)
 
 val parse_filename_exn : string -> Ptime.t * string * string
 (** [parse_filename_exn f] operates as {!parse_filename} except that it raises a

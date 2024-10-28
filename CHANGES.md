@@ -1,3 +1,11 @@
+v0.3.4 2024-10-28 Cambridge
+---------------------------
+
+- Improve slug inference by working on files of the form
+  `name.md` (without a date component). For these files, if the
+  `date` field is present but no `slug` field, then the `slug`
+  field is assigned as the filename (sans extension).
+
 v0.3.3 2023-11-04 Cambridge
 ---------------------------
 
