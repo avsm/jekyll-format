@@ -1,4 +1,4 @@
-v0.3.4 2024-08-09 Cambridge
+v0.3.4 2024-10-28 Cambridge
 ---------------------------
 
 - Improve slug inference by working on files of the form
